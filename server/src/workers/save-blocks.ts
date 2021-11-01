@@ -1,32 +1,9 @@
-import got from 'got'
-import { getConnection } from 'typeorm'
-import {
-  GetBlockCountResponse,
-  GetBlockHashResponse,
-  GetBlockResponse,
-} from '../types'
+import { GetBlockResponse } from '../types/rpc-responses'
 import { Block } from '../entities'
-
-const URL = process.env.RPC_URL
-
-// TODO needs refactoring
+import { getBlockcount, rpcCall, saveGenesisBlock } from '../utils'
 
 const saveBlocks = async (): Promise<void> => {
-  // TODO refactor post requests, they're all the same
-  const { body: countBody } = await got.post(URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      jsonrpc: '1.0',
-      id: 'curltext',
-      method: 'getblockcount',
-      params: [],
-    }),
-  })
-
-  const blockCount: GetBlockCountResponse = JSON.parse(countBody).result
+  const blockCount = await getBlockcount()
 
   if (blockCount === undefined) {
     console.error('can not connect to rpc server')
@@ -34,91 +11,22 @@ const saveBlocks = async (): Promise<void> => {
     return
   }
 
-  let highestBlock = await Block.findOne({ order: { height: 'DESC' } })
-
-  // save genesis block if no blocks exist in db
-  if (highestBlock === undefined) {
-    const { body: genesisHashBody } = await got.post(URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        jsonrpc: '1.0',
-        id: 'curltext',
-        method: 'getblockhash',
-        params: [0],
-      }),
-    })
-
-    const genesisHash: GetBlockHashResponse = JSON.parse(genesisHashBody).result
-
-    if (genesisHash === undefined) {
-      console.error('can not get genesis hash')
-
-      return
-    }
-
-    const { body: genesisBlockBody } = await got.post(URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        jsonrpc: '1.0',
-        id: 'curltext',
-        method: 'getblock',
-        params: [genesisHash],
-      }),
-    })
-
-    const genesisBlock: GetBlockResponse = JSON.parse(genesisBlockBody).result
-
-    if (genesisBlock === undefined) {
-      console.error('can not get data for genesis block')
-
-      return
-    }
-
-    const result = await getConnection()
-      .createQueryBuilder()
-      .insert()
-      .into(Block)
-      .values({
-        hash: genesisBlock.hash,
-        height: genesisBlock.height,
-        createdAt: new Date(genesisBlock.time * 1000),
-      })
-      .returning('*')
-      .execute()
-
-    highestBlock = result.raw[0]
-  }
+  const highestBlock =
+    (await Block.findOne({ order: { height: 'DESC' } })) ??
+    (await saveGenesisBlock())
 
   if (highestBlock === undefined) {
-    console.error('can not save genesis block to database')
+    console.error('can neither get highest block nor save genesis block')
 
     return
   }
-
   if (highestBlock.height === blockCount) {
     console.log('no new blocks')
 
     return
   }
 
-  const { body } = await got.post(URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      jsonrpc: '1.0',
-      id: 'curltext',
-      method: 'getblock',
-      params: [highestBlock.hash],
-    }),
-  })
+  const body = await rpcCall('getblock', [highestBlock.hash])
 
   const result: GetBlockResponse = JSON.parse(body).result
 
@@ -131,18 +39,7 @@ const saveBlocks = async (): Promise<void> => {
   let nextblockhash = result.nextblockhash
 
   for (let i = highestBlock.height; i < blockCount; i++) {
-    const { body } = await got.post(URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        jsonrpc: '1.0',
-        id: 'curltext',
-        method: 'getblock',
-        params: [nextblockhash],
-      }),
-    })
+    const body = await rpcCall('getblock', [nextblockhash])
 
     const block: GetBlockResponse = JSON.parse(body).result
 
@@ -152,22 +49,15 @@ const saveBlocks = async (): Promise<void> => {
       return
     }
 
-    const result = await getConnection()
-      .createQueryBuilder()
-      .insert()
-      .into(Block)
-      .values({
-        hash: block.hash,
-        height: block.height,
-        createdAt: new Date(block.time * 1000),
-      })
-      .returning('*')
-      .execute()
-
-    const savedBlock = result.raw[0]
+    const savedBlock = await Block.create({
+      hash: block.hash,
+      height: block.height,
+      createdAt: new Date(block.time * 1000),
+    }).save()
 
     if (savedBlock === undefined) {
       console.error(`can not save block with hash ${nextblockhash} to db`)
+
       return
     }
 
