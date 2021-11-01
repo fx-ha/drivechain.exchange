@@ -7,7 +7,7 @@ import { ApolloServer } from 'apollo-server-express'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
 import { buildSchema } from 'type-graphql'
 import { schedule } from 'node-cron'
-import { HelloResolver } from './resolvers'
+import { NewsResolver } from './resolvers'
 import { createConnection } from 'typeorm'
 import { Block, NewsItem, Topic } from './entities'
 import { saveBlocks, saveNews } from './workers'
@@ -43,7 +43,7 @@ const main = async (): Promise<void> => {
 
   // apollo
   const schema = await buildSchema({
-    resolvers: [HelloResolver],
+    resolvers: [NewsResolver],
   })
 
   const apolloServer = new ApolloServer({
