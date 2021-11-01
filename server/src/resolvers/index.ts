@@ -1,1 +1,1 @@
-export { default as HelloResolver } from './HelloResolver'
+export { default as NewsResolver } from './NewsResolver'

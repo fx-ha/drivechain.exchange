@@ -1,17 +1,17 @@
-import { getBlockcount, rpcCall } from '../utils'
+import { getRepository } from 'typeorm'
+import { rpcCall } from '../utils'
 import {
   GetOpReturnDataResponse,
   GetRawTransactionResponse,
 } from '../types/rpc-responses'
 import { Block, NewsItem, Topic } from '../entities'
-import { getRepository } from 'typeorm'
 import { NEWS_MIN_START_HEIGHT } from '../constants'
 
 const saveNews = async () => {
-  const blockCount = await getBlockcount()
+  const highestBlock = await Block.findOne({ order: { height: 'DESC' } })
 
-  if (blockCount === undefined) {
-    console.error('can not connect to rpc server')
+  if (highestBlock === undefined) {
+    console.error('no blocks found, save blocks first')
 
     return
   }
@@ -27,7 +27,7 @@ const saveNews = async () => {
       ? newsWithHighestBlockHeight.block.height
       : NEWS_MIN_START_HEIGHT
 
-  for (let i = startFromBlockHeight; i < blockCount; i++) {
+  for (let i = startFromBlockHeight; i < highestBlock.height; i++) {
     const block = await Block.findOne({ where: { height: i } })
 
     if (block === undefined) {
