@@ -1,31 +1,35 @@
 import 'reflect-metadata'
 import 'dotenv-safe/config.js'
+import path from 'path'
 import express from 'express'
 import cors from 'cors'
 import { ApolloServer } from 'apollo-server-express'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
 import { buildSchema } from 'type-graphql'
-import nodeCron from 'node-cron'
+import { schedule } from 'node-cron'
 import { HelloResolver } from './resolvers'
 import { createConnection } from 'typeorm'
-import { Block, NewsItem } from './entities'
-import { saveBlocks } from './workers'
-
-const { schedule } = nodeCron
+import { Block, NewsItem, Topic } from './entities'
+import { saveBlocks, saveNews } from './workers'
 
 const main = async (): Promise<void> => {
   // db
-  await createConnection({
+  const conn = await createConnection({
     type: 'postgres',
     url: process.env.DATABASE_URL,
     logging: process.env.DB_LOGGING === 'true' ? true : false,
     synchronize: process.env.DB_SYNC === 'true' ? true : false,
-    entities: [Block, NewsItem],
+    migrations: [path.join(__dirname, './migrations/*')],
+    entities: [Block, Topic, NewsItem],
   })
 
+  await conn.runMigrations()
+
   // cron
-  // every 30 minutes
-  schedule('*/30 * * * *', () => saveBlocks())
+  // at x:00 and x:30
+  schedule('0,30 * * * *', () => saveBlocks())
+  // at x:15 and x:45
+  schedule('15,45 * * * *', () => saveNews())
 
   // express
   const app = express()

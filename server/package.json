@@ -1,10 +1,10 @@
 {
-  "type": "module",
+  "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node --experimental-specifier-resolution=node dist/index.js",
+    "start": "node dist/index.js",
     "watch": "tsc -w",
-    "dev": "nodemon --experimental-specifier-resolution=node dist/index.js",
+    "dev": "nodemon dist/index.js",
     "gen-env": "gen-env-types .env -o src/env.d.ts -e .",
     "test": "jest --watchAll --verbose"
   },
