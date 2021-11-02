@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { ApolloClient, InMemoryCache } from '@apollo/client'
 import {
   Box,
   Flex,
@@ -21,8 +22,13 @@ import {
 import { BiSortAlt2 } from 'react-icons/bi'
 import { BsCheck } from 'react-icons/bs'
 import { Layout } from '../components'
-import { replaceUrls, withApollo } from '../utils'
+import { replaceUrls } from '../utils'
 import { NewsItem, useNewsQuery, useTopicsQuery } from '../generated/graphql'
+
+const client = new ApolloClient({
+  uri: process.env.NEXT_PUBLIC_API_URL as string,
+  cache: new InMemoryCache(),
+})
 
 type SortType = 'fee' | 'date'
 
@@ -31,9 +37,12 @@ const News = () => {
   const [sortBy, setSortBy] = useState<SortType>('date')
   const [news, setNews] = useState<NewsItem[]>()
 
-  const { data: topicsData, loading: topicsLoading } = useTopicsQuery()
+  const { data: topicsData, loading: topicsLoading } = useTopicsQuery({
+    client,
+  })
 
   const { data: newsData, loading: newsLoading } = useNewsQuery({
+    client,
     variables: { topic },
   })
 
@@ -127,7 +136,7 @@ const News = () => {
               mb="6"
               borderWidth="1px"
               borderRadius="md"
-              overflowX="hidden"
+              overflowX="auto"
             >
               <VStack spacing="2" alignItems="start">
                 <HStack fontSize="xs">
@@ -156,4 +165,4 @@ const News = () => {
   )
 }
 
-export default withApollo({ ssr: true })(News)
+export default News
