@@ -26,7 +26,7 @@ import { replaceUrls } from '../utils'
 import { NewsItem, useNewsQuery, useTopicsQuery } from '../generated/graphql'
 
 const client = new ApolloClient({
-  uri: 'http://localhost:3001/graphql',
+  uri: process.env.NEXT_PUBLIC_API_URL as string,
   cache: new InMemoryCache(),
 })
 
