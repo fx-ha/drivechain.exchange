@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { Container, Flex, useColorMode } from '@chakra-ui/react'
-import { Navigation } from '.'
+import { Footer, Navigation } from '.'
 
 const Layout = ({
   title,
@@ -31,8 +31,11 @@ const Layout = ({
       >
         <Container maxW="3xl">
           <Navigation />
+
           <main>{children}</main>
         </Container>
+
+        <Footer />
       </Flex>
     </>
   )
