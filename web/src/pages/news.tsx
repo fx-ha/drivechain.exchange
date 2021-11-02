@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { ApolloClient, InMemoryCache } from '@apollo/client'
 import {
   Box,
   Flex,
@@ -25,11 +24,6 @@ import { Layout } from '../components'
 import { replaceUrls, withApollo } from '../utils'
 import { NewsItem, useNewsQuery, useTopicsQuery } from '../generated/graphql'
 
-const client = new ApolloClient({
-  uri: 'http://localhost:3001/graphql',
-  cache: new InMemoryCache(),
-})
-
 type SortType = 'fee' | 'date'
 
 const News = () => {
@@ -37,13 +31,10 @@ const News = () => {
   const [sortBy, setSortBy] = useState<SortType>('date')
   const [news, setNews] = useState<NewsItem[]>()
 
-  const { data: topicsData, loading: topicsLoading } = useTopicsQuery({
-    client,
-  })
+  const { data: topicsData, loading: topicsLoading } = useTopicsQuery()
 
   const { data: newsData, loading: newsLoading } = useNewsQuery({
     variables: { topic },
-    client,
   })
 
   useEffect(() => {
