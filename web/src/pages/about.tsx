@@ -1,7 +1,7 @@
 import { Layout } from '../components'
 
-const Home = () => {
+const About = () => {
   return <Layout>Coming soon...</Layout>
 }
 
-export default Home
+export default About

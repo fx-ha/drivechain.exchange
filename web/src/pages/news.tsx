@@ -32,7 +32,7 @@ const client = new ApolloClient({
 
 type SortType = 'fee' | 'date'
 
-const Home = () => {
+const News = () => {
   const [topic, setTopic] = useState('a1a1a1a1')
   const [sortBy, setSortBy] = useState<SortType>('date')
   const [news, setNews] = useState<NewsItem[]>()
@@ -165,4 +165,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default News
