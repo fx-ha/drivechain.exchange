@@ -1,0 +1,6 @@
+query Topics {
+  topics {
+    hex
+    name
+  }
+}

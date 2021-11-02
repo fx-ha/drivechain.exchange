@@ -1,0 +1,17 @@
+query News($topic: String!) {
+  newsByTopic(topic: $topic) {
+    content
+    fee
+    txid
+    block {
+      createdAt
+      hash
+      height
+    }
+    topic {
+      name
+      hex
+      createdAt
+    }
+  }
+}
