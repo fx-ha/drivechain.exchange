@@ -22,7 +22,7 @@ import {
 import { BiSortAlt2 } from 'react-icons/bi'
 import { BsCheck } from 'react-icons/bs'
 import { Layout } from '../components'
-import { replaceUrls } from '../utils'
+import { replaceUrls, withApollo } from '../utils'
 import { NewsItem, useNewsQuery, useTopicsQuery } from '../generated/graphql'
 
 const client = new ApolloClient({
@@ -61,7 +61,7 @@ const News = () => {
   }, [sortBy, newsData, newsLoading])
 
   return (
-    <Layout>
+    <Layout title="Coin News | Drivechain Exchange">
       <Flex mb="9" alignItems="center">
         <Box>
           {newsLoading || !news ? (
@@ -165,4 +165,4 @@ const News = () => {
   )
 }
 
-export default News
+export default withApollo({ ssr: true })(News)
