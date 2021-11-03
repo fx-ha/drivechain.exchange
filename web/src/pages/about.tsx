@@ -15,7 +15,7 @@ const About = () => {
           <Link
             isExternal
             href="https://github.com/bitcoin/bips/tree/master/bip-0300"
-            textDecoration="underline"
+            fontWeight="bold"
           >
             BIP 300
           </Link>{' '}
@@ -23,7 +23,7 @@ const About = () => {
           <Link
             isExternal
             href="https://github.com/bitcoin/bips/tree/master/bip-0300"
-            textDecoration="underline"
+            fontWeight="bold"
           >
             BIP 301
           </Link>
@@ -33,7 +33,7 @@ const About = () => {
           <Link
             isExternal
             href="https://www.drivechain.info/"
-            textDecoration="underline"
+            fontWeight="bold"
           >
             drivechain.info
           </Link>
@@ -59,7 +59,7 @@ const About = () => {
           CoinNews is a fun invention from the team behind drivechain. If you
           want to try it yourself, download the client at{' '}
           <Link
-            textDecoration="underline"
+            fontWeight="bold"
             isExternal
             href="https://www.drivechain.info/releases/index.html"
           >
@@ -70,7 +70,7 @@ const About = () => {
           fee to miners to have their content stored and organized by topic.
           Have a quick overview of the past CoinNews headlines at{' '}
           <NextLink href="/news" passHref>
-            <Link textDecoration="underline">drivechain.exchange/news</Link>
+            <Link fontWeight="bold">drivechain.exchange/news</Link>
           </NextLink>
           .
         </Text>
