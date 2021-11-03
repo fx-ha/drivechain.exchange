@@ -1,0 +1,10 @@
+mutation CreateInvoice($depositChain: String!, $receiverData: [ReceiverInput!]!) {
+  createInvoice(depositChain: $depositChain, receiverData: $receiverData) {
+    id
+    depositChain
+    depositAddress
+    hasDeposited
+    createdAt
+    updatedat
+  }
+}

@@ -7,10 +7,15 @@ import { ApolloServer } from 'apollo-server-express'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
 import { buildSchema } from 'type-graphql'
 import { schedule } from 'node-cron'
-import { NewsResolver, TopicResolver } from './resolvers'
+import {
+  AddressResolver,
+  InvoiceResolver,
+  NewsResolver,
+  TopicResolver,
+} from './resolvers'
 import { createConnection } from 'typeorm'
-import { Block, NewsItem, Topic } from './entities'
-import { saveBlocks, saveNews } from './workers'
+import { Block, Invoice, NewsItem, Receiver, Topic } from './entities'
+import { handleInvoices, saveBlocks, saveNews } from './workers'
 
 const main = async (): Promise<void> => {
   // db
@@ -20,7 +25,7 @@ const main = async (): Promise<void> => {
     logging: process.env.DB_LOGGING === 'true' ? true : false,
     synchronize: process.env.DB_SYNC === 'true' ? true : false,
     migrations: [path.join(__dirname, './migrations/*')],
-    entities: [Block, Topic, NewsItem],
+    entities: [Block, Invoice, Receiver, Topic, NewsItem],
   })
 
   await conn.runMigrations()
@@ -30,6 +35,8 @@ const main = async (): Promise<void> => {
   schedule('0,30 * * * *', () => saveBlocks())
   // at x:15 and x:45
   schedule('15,45 * * * *', () => saveNews())
+  // every minute
+  schedule('*/1 * * * *', () => handleInvoices())
 
   // express
   const app = express()
@@ -43,7 +50,7 @@ const main = async (): Promise<void> => {
 
   // apollo
   const schema = await buildSchema({
-    resolvers: [NewsResolver, TopicResolver],
+    resolvers: [AddressResolver, InvoiceResolver, NewsResolver, TopicResolver],
   })
 
   const apolloServer = new ApolloServer({

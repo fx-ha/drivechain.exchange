@@ -7,6 +7,8 @@
   "rules": {
     "prefer-const": "warn",
     "no-undef": "off",
-    "no-unused-vars": ["error", { "args": "none" }]
+    "no-unused-vars": ["error", { "args": "none" }],
+    "no-console": "warn",
+    "eol-last": "warn"
   }
 }

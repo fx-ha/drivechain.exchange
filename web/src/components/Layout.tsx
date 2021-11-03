@@ -16,7 +16,7 @@ const Layout = ({
   return (
     <>
       <Head>
-        <link rel="icon" href="/images/icon/favicon.ico" />
+        <link rel="icon" href="/favicon.ico" />
         <meta name="og:title" content={title ?? 'Drivechain Exchange'} />
         <title>{title ?? 'Drivechain Exchange'}</title>
       </Head>

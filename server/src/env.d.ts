@@ -6,5 +6,11 @@ declare namespace NodeJS {
     DB_LOGGING: string
     DB_SYNC: string
     RPC_URL: string
+    DRIVENET_PORT: string
+    TESTCHAIN_PORT: string
+    THUNDER_PORT: string
+    TRAINCHAIN_PORT: string
+    ZSIDE_PORT: string
+    MIN_CONF: string
   }
 }

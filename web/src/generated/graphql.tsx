@@ -27,6 +27,26 @@ export type Block = {
   height: Scalars['Float']
 }
 
+export type Invoice = {
+  __typename?: 'Invoice'
+  createdAt: Scalars['String']
+  depositAddress: Scalars['String']
+  depositChain: Scalars['String']
+  hasDeposited: Scalars['Boolean']
+  id: Scalars['ID']
+  updatedat: Scalars['String']
+}
+
+export type Mutation = {
+  __typename?: 'Mutation'
+  createInvoice?: Maybe<Invoice>
+}
+
+export type MutationCreateInvoiceArgs = {
+  depositChain: Scalars['String']
+  receiverData: Array<ReceiverInput>
+}
+
 export type NewsItem = {
   __typename?: 'NewsItem'
   block: Block
@@ -38,12 +58,23 @@ export type NewsItem = {
 
 export type Query = {
   __typename?: 'Query'
+  addressByChain: Scalars['String']
   newsByTopic: Array<NewsItem>
   topics: Array<Topic>
 }
 
+export type QueryAddressByChainArgs = {
+  chain: Scalars['String']
+}
+
 export type QueryNewsByTopicArgs = {
   topic: Scalars['String']
+}
+
+export type ReceiverInput = {
+  allocation?: Maybe<Scalars['Float']>
+  receiveAddress: Scalars['String']
+  receiveChain: Scalars['String']
 }
 
 export type Topic = {
@@ -51,6 +82,27 @@ export type Topic = {
   createdAt: Scalars['String']
   hex: Scalars['String']
   name: Scalars['String']
+}
+
+export type CreateInvoiceMutationVariables = Exact<{
+  depositChain: Scalars['String']
+  receiverData: Array<ReceiverInput> | ReceiverInput
+}>
+
+export type CreateInvoiceMutation = {
+  __typename?: 'Mutation'
+  createInvoice?:
+    | {
+        __typename?: 'Invoice'
+        id: string
+        depositChain: string
+        depositAddress: string
+        hasDeposited: boolean
+        createdAt: string
+        updatedat: string
+      }
+    | null
+    | undefined
 }
 
 export type NewsQueryVariables = Exact<{
@@ -86,6 +138,65 @@ export type TopicsQuery = {
   topics: Array<{ __typename?: 'Topic'; hex: string; name: string }>
 }
 
+export const CreateInvoiceDocument = gql`
+  mutation CreateInvoice(
+    $depositChain: String!
+    $receiverData: [ReceiverInput!]!
+  ) {
+    createInvoice(depositChain: $depositChain, receiverData: $receiverData) {
+      id
+      depositChain
+      depositAddress
+      hasDeposited
+      createdAt
+      updatedat
+    }
+  }
+`
+export type CreateInvoiceMutationFn = Apollo.MutationFunction<
+  CreateInvoiceMutation,
+  CreateInvoiceMutationVariables
+>
+
+/**
+ * __useCreateInvoiceMutation__
+ *
+ * To run a mutation, you first call `useCreateInvoiceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateInvoiceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createInvoiceMutation, { data, loading, error }] = useCreateInvoiceMutation({
+ *   variables: {
+ *      depositChain: // value for 'depositChain'
+ *      receiverData: // value for 'receiverData'
+ *   },
+ * });
+ */
+export function useCreateInvoiceMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateInvoiceMutation,
+    CreateInvoiceMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<
+    CreateInvoiceMutation,
+    CreateInvoiceMutationVariables
+  >(CreateInvoiceDocument, options)
+}
+export type CreateInvoiceMutationHookResult = ReturnType<
+  typeof useCreateInvoiceMutation
+>
+export type CreateInvoiceMutationResult =
+  Apollo.MutationResult<CreateInvoiceMutation>
+export type CreateInvoiceMutationOptions = Apollo.BaseMutationOptions<
+  CreateInvoiceMutation,
+  CreateInvoiceMutationVariables
+>
 export const NewsDocument = gql`
   query News($topic: String!) {
     newsByTopic(topic: $topic) {
