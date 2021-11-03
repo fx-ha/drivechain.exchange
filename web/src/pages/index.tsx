@@ -1,10 +1,17 @@
-import { Button } from '@chakra-ui/button'
-import Icon from '@chakra-ui/icon'
-import { Input } from '@chakra-ui/input'
-import { Box, Flex, Spacer, Text } from '@chakra-ui/layout'
-import { useColorModeValue, useToast } from '@chakra-ui/react'
-import { Select } from '@chakra-ui/select'
 import { useState } from 'react'
+import {
+  Box,
+  Button,
+  Flex,
+  Icon,
+  Input,
+  Select,
+  Spacer,
+  Text,
+  Tooltip,
+  useColorModeValue,
+  useToast,
+} from '@chakra-ui/react'
 import { AiOutlineSwap } from 'react-icons/ai'
 import { Layout } from '../components'
 import { useCreateInvoiceMutation } from '../generated/graphql'
@@ -118,43 +125,46 @@ const Home = () => {
             {showDepositAddress && (
               <>
                 <Text mb="2">Send between 0.1 and 1.0 BTC (Testnet) to</Text>
-                <Box
-                  w="100%"
-                  maxW="352px"
-                  fontSize={{ base: 'sm', sm: 'md' }}
-                  textAlign="center"
-                  value={depositAddress}
-                  cursor="pointer"
-                  border="1px solid"
-                  borderRadius="md"
-                  paddingInlineStart="4"
-                  paddingInlineEnd="4"
-                  outline="2px solid transparent"
-                  height="10"
-                  position="relative"
-                  borderColor="inherit"
-                  padding="0"
-                  lineHeight="inherit"
-                  color="inherit"
-                  fontFamily="inherit"
-                  margin="0"
-                  pt="2"
-                  _hover={{ borderColor }}
-                  onClick={(e) => {
-                    navigator.clipboard.writeText(
-                      e.currentTarget.textContent !== null
-                        ? e.currentTarget.textContent
-                        : ''
-                    )
-                    toast({
-                      title: 'Copied.',
-                      duration: 4000,
-                      isClosable: true,
-                    })
-                  }}
-                >
-                  {depositAddress}
-                </Box>
+
+                <Tooltip label="Copy address" placement="bottom">
+                  <Box
+                    w="100%"
+                    maxW="352px"
+                    fontSize={{ base: 'sm', sm: 'md' }}
+                    textAlign="center"
+                    value={depositAddress}
+                    cursor="pointer"
+                    border="1px solid"
+                    borderRadius="md"
+                    paddingInlineStart="4"
+                    paddingInlineEnd="4"
+                    outline="2px solid transparent"
+                    height="10"
+                    position="relative"
+                    borderColor="inherit"
+                    padding="0"
+                    lineHeight="inherit"
+                    color="inherit"
+                    fontFamily="inherit"
+                    margin="0"
+                    pt="2"
+                    _hover={{ borderColor }}
+                    onClick={(e) => {
+                      navigator.clipboard.writeText(
+                        e.currentTarget.textContent !== null
+                          ? e.currentTarget.textContent
+                          : ''
+                      )
+                      toast({
+                        title: 'Copied.',
+                        duration: 4000,
+                        isClosable: true,
+                      })
+                    }}
+                  >
+                    {depositAddress}
+                  </Box>
+                </Tooltip>
               </>
             )}
           </Flex>

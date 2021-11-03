@@ -1,28 +1,33 @@
 import { useEffect, useState } from 'react'
 import {
   Box,
+  Button,
   Flex,
   Heading,
   HStack,
-  Spacer,
-  Text,
-  VStack,
-} from '@chakra-ui/layout'
-import {
-  Button,
   Icon,
   IconButton,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
+  Spacer,
   Spinner,
+  Text,
+  Tooltip,
+  useToast,
+  VStack,
 } from '@chakra-ui/react'
 import { BiSortAlt2 } from 'react-icons/bi'
 import { BsCheck } from 'react-icons/bs'
 import { Layout } from '../components'
-import { apolloClient as client, replaceUrls } from '../utils'
 import { NewsItem, useNewsQuery, useTopicsQuery } from '../generated/graphql'
+import {
+  apolloClient as client,
+  formatDistance,
+  replaceUrls,
+  truncateMiddle,
+} from '../utils'
 
 type SortType = 'fee' | 'date'
 
@@ -30,6 +35,8 @@ const News = () => {
   const [topic, setTopic] = useState('a1a1a1a1')
   const [sortBy, setSortBy] = useState<SortType>('date')
   const [news, setNews] = useState<NewsItem[]>()
+
+  const toast = useToast()
 
   const { data: topicsData, loading: topicsLoading } = useTopicsQuery({
     client,
@@ -55,7 +62,7 @@ const News = () => {
   }, [sortBy, newsData, newsLoading])
 
   return (
-    <Layout title="Coin News | Drivechain Exchange">
+    <Layout title="CoinNews | Drivechain Exchange">
       <Flex mb="9" alignItems="center">
         <Box>
           {newsLoading || !news ? (
@@ -134,6 +141,25 @@ const News = () => {
             >
               <VStack spacing="2" alignItems="start">
                 <HStack fontSize="xs">
+                  <Tooltip label="Copy transaction id" placement="top">
+                    <Text
+                      onClick={() => {
+                        navigator.clipboard.writeText(item.txid)
+                        toast({
+                          title: 'Copied.',
+                          duration: 4000,
+                          isClosable: true,
+                        })
+                      }}
+                      _hover={{
+                        cursor: 'pointer',
+                        textDecoration: 'underline',
+                      }}
+                    >
+                      @{truncateMiddle(item.txid)}
+                    </Text>
+                  </Tooltip>
+
                   <Text>
                     {Number(item.fee).toLocaleString('en-US', {
                       minimumFractionDigits: 4,
@@ -141,10 +167,16 @@ const News = () => {
                     })}{' '}
                     ₿
                   </Text>
-                  <Text>
-                    {new Date(Number(item.block.createdAt)).toLocaleString()}
+
+                  <Text
+                    title={new Date(
+                      Number(item.block.createdAt)
+                    ).toLocaleString()}
+                  >
+                    {formatDistance(new Date(Number(item.block.createdAt)))}
                   </Text>
                 </HStack>
+
                 <Text
                   dangerouslySetInnerHTML={{
                     __html: replaceUrls(item.content),

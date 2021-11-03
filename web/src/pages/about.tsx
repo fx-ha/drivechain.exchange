@@ -1,5 +1,5 @@
 import NextLink from 'next/link'
-import { Box, Heading, Link, Text } from '@chakra-ui/layout'
+import { Box, Heading, Link, Text } from '@chakra-ui/react'
 import { Layout } from '../components'
 
 const About = () => {
