@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { ApolloClient, InMemoryCache } from '@apollo/client'
 import {
   Box,
   Flex,
@@ -22,13 +21,8 @@ import {
 import { BiSortAlt2 } from 'react-icons/bi'
 import { BsCheck } from 'react-icons/bs'
 import { Layout } from '../components'
-import { replaceUrls } from '../utils'
+import { apolloClient as client, replaceUrls } from '../utils'
 import { NewsItem, useNewsQuery, useTopicsQuery } from '../generated/graphql'
-
-const client = new ApolloClient({
-  uri: process.env.NEXT_PUBLIC_API_URL as string,
-  cache: new InMemoryCache(),
-})
 
 type SortType = 'fee' | 'date'
 

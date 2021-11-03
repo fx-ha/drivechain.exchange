@@ -1,3 +1,5 @@
 export { default as Block } from './Block'
 export { default as NewsItem } from './NewsItem'
 export { default as Topic } from './Topic'
+export { default as Invoice } from './Invoice'
+export { default as Receiver } from './Receiver'

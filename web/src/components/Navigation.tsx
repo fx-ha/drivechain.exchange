@@ -16,15 +16,17 @@ const Navigation = () => {
   const isDark = colorMode === 'dark'
 
   return (
-    <Flex as="nav" alignItems="center" mt={{ base: '5', sm: '10' }} mb="16">
+    <Flex as="nav" alignItems="center" mt={{ base: '5', sm: '8' }} mb="16">
       <NextLink href="/" passHref>
-        <Link fontSize="lg">Exchange</Link>
+        <Link fontSize={{ base: 'md', sm: 'lg' }}>Exchange</Link>
       </NextLink>
 
       <Spacer />
 
       <HStack spacing={3}>
-        <NavLink href="/news">Coin News</NavLink>
+        <NavLink href="/news">News</NavLink>
+        <Text>|</Text>
+        <NavLink href="/faucet">Faucet</NavLink>
         <Text>|</Text>
         <NavLink href="/about">About</NavLink>
         <Text>|</Text>
