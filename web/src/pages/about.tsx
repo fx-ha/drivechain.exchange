@@ -7,7 +7,7 @@ const About = () => {
     <Layout title="About | Drivechain Exchange">
       <Box as="section" mb="14">
         <Heading size="lg" as="h2" mb="4">
-          Drivechain Exchange
+          Drivechain
         </Heading>
 
         <Text textAlign="justify" mb="5">
@@ -28,7 +28,7 @@ const About = () => {
             BIP 301
           </Link>
           . It&#39;s a promising idea to bring sidechains to Bitcoin. For
-          testing purposes it&#39;s running on its own testnet called drivenet.
+          testing purposes, it&#39;s running on its own testnet called drivenet.
           You can read more about it and download the software at{' '}
           <Link
             isExternal
@@ -41,13 +41,12 @@ const About = () => {
         </Text>
 
         <Text textAlign="justify">
-          One security feature, to discourage miners from stealing sidechain
-          coins, is a very slow withdrawal process. Sending coins from a
-          sidechain back to the mainchain takes three months, which can be
+          One of the security features to discourage miners from stealing
+          sidechain coins, is a very slow withdrawal process. Sending coins from
+          a sidechain back to the mainchain takes three months, which can be
           annoying for honest but impatient users. This is where services like
-          exchanges can improve the user experience by providing liquidity on
-          both sides with near instant transfers between chains - for a small
-          fee.
+          exchanges improve the user experience by providing liquidity on both
+          sides with near instant transfers between chains - for a small fee.
         </Text>
       </Box>
 
@@ -67,7 +66,7 @@ const About = () => {
             drivechain.info/releases
           </Link>
           . It introduces a new interface to write to the blockchain without
-          requiring further changes to the Bitcoin protocol. User pay a small
+          requiring further changes to the Bitcoin protocol. Users pay a small
           fee to miners to have their content stored and organized by topic.
           Have a quick overview of the past CoinNews headlines at{' '}
           <NextLink href="/news" passHref>
@@ -79,11 +78,11 @@ const About = () => {
 
       <Box as="section">
         <Heading size="lg" as="h2" mb="4">
-          Demo
+          Exchange Demo
         </Heading>
 
         <Text textAlign="justify" mb="5">
-          A quick demo of an earlier version to showcase a transfer between two
+          A short demo of an earlier version to showcase a transfer between two
           chains
         </Text>
         <video controls>
