@@ -35,6 +35,7 @@ const Navigation = () => {
           as={isDark ? BiSun : BiMoon}
           cursor="pointer"
           boxSize={5}
+          pb="0.5"
         />
       </HStack>
     </Flex>
