@@ -168,13 +168,16 @@ const News = () => {
                     ₿
                   </Text>
 
-                  <Text
-                    title={new Date(
+                  <Tooltip
+                    label={new Date(
                       Number(item.block.createdAt)
                     ).toLocaleString()}
+                    placement="top"
                   >
-                    {formatDistance(new Date(Number(item.block.createdAt)))}
-                  </Text>
+                    <Text>
+                      {formatDistance(new Date(Number(item.block.createdAt)))}
+                    </Text>
+                  </Tooltip>
                 </HStack>
 
                 <Text
