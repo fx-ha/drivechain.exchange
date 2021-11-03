@@ -3,11 +3,7 @@ import { formatDistanceToNowStrict } from 'date-fns'
 const formatDistance = (date: Date) => {
   const formatted = formatDistanceToNowStrict(date)
 
-  if (
-    ['day', 'days', 'month', 'months', 'year', 'years'].some((el) =>
-      formatted.includes(el)
-    )
-  ) {
+  if (['day', 'days', 'month', 'months'].some((el) => formatted.includes(el))) {
     return date.toLocaleDateString(undefined, {
       month: 'short',
       day: 'numeric',
