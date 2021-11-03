@@ -1,5 +1,4 @@
-import { Box, Container, Divider, Link } from '@chakra-ui/layout'
-import { Icon, Tooltip } from '@chakra-ui/react'
+import { Box, Container, Divider, Icon, Link, Tooltip } from '@chakra-ui/react'
 import { FaGithub } from 'react-icons/fa'
 
 const Footer = () => (
@@ -7,7 +6,7 @@ const Footer = () => (
     <Divider mt={10} mb={1} />
 
     <Box mb={1} textAlign="center">
-      <Tooltip label="Code on Github">
+      <Tooltip label="Code on Github" placement="top">
         <Link isExternal href="https://github.com/fx-ha/drivechain.exchange">
           <Icon as={FaGithub} />
         </Link>
