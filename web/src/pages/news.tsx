@@ -65,11 +65,11 @@ const News = () => {
     <Layout title="CoinNews | Drivechain Exchange">
       <Flex mb="9" alignItems="center">
         <Box>
-          {newsLoading || !news ? (
+          {topicsLoading || !topicsData ? (
             <Spinner />
           ) : (
             <Heading as="h1" size="lg">
-              {news[0].topic.name}
+              {topicsData.topics.find((el) => el.hex === topic)?.name}
             </Heading>
           )}
         </Box>
