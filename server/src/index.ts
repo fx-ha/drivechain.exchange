@@ -31,11 +31,11 @@ const main = async (): Promise<void> => {
   await conn.runMigrations()
 
   // cron
-  // at x:00 and x:30
-  schedule('0,30 * * * *', () => saveBlocks())
-  // at x:15 and x:45
-  schedule('15,45 * * * *', () => saveNews())
-  // every minute
+  // run every 10 minutes from :00
+  schedule('0,10,20,30,40,50 * * * *', () => saveBlocks())
+  // run every 10 minutes from :05
+  schedule('5,15,25,35,45,55 * * * *', () => saveNews())
+  // run every minute
   schedule('*/1 * * * *', () => handleInvoices())
 
   // express
