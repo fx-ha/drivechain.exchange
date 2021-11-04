@@ -44,9 +44,9 @@ const About = () => {
           One of the security features to discourage miners from stealing
           sidechain coins, is a very slow withdrawal process. Sending coins from
           a sidechain back to the mainchain takes three months, which can be
-          annoying for honest but impatient users. This is where services like
-          exchanges improve the user experience by providing liquidity on both
-          sides with near instant transfers between chains - for a small fee.
+          annoying for honest but impatient users. Services like exchanges
+          improve the user experience by providing liquidity on both sides with
+          near instant transfers between chains - for a small fee.
         </Text>
       </Box>
 
