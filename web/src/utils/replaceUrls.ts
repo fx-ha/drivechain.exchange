@@ -11,7 +11,7 @@ const replaceUrls = (message: string): string => {
     return (
       '<a href="' +
       hyperlink +
-      '" target="_blank" rel="noopener noreferrer" style="font-weight:bold;">' +
+      '" target="_blank" rel="noopener noreferrer" style="text-decoration:underline;">' +
       url +
       '</a>'
     )
