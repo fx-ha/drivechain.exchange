@@ -24,8 +24,8 @@ const Home = () => {
   )
   const toast = useToast()
 
-  const [depositChain, setDeposit] = useState('drivenet')
-  const [receiveChain, setReceive] = useState('testchain')
+  const [depositChain, setDeposit] = useState('zside')
+  const [receiveChain, setReceive] = useState('drivenet')
 
   const [receiveAddress, setReceiveAddress] = useState('')
   const [depositAddress, setDepositAddress] = useState('')
