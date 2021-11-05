@@ -5,7 +5,6 @@ import {
   Flex,
   Heading,
   HStack,
-  Icon,
   IconButton,
   Menu,
   MenuButton,
@@ -15,26 +14,28 @@ import {
   Spinner,
   Text,
   Tooltip,
+  useColorMode,
   useToast,
   VStack,
 } from '@chakra-ui/react'
 import { BiSortAlt2 } from 'react-icons/bi'
-import { BsCheck } from 'react-icons/bs'
-import { Layout } from '../components'
+import { Layout, NewsContent } from '../components'
 import { NewsItem, useNewsQuery, useTopicsQuery } from '../generated/graphql'
 import {
   apolloClient as client,
   formatDistance,
-  replaceUrls,
   truncateMiddle,
 } from '../utils'
 
 type SortType = 'fee' | 'date'
 
 const News = () => {
-  const [topic, setTopic] = useState('a1a1a1a1')
+  const [activeTopic, setActiveTopic] = useState('a1a1a1a1')
   const [sortBy, setSortBy] = useState<SortType>('date')
   const [news, setNews] = useState<NewsItem[]>()
+
+  const { colorMode } = useColorMode()
+  const isDark = colorMode === 'dark'
 
   const toast = useToast()
 
@@ -44,7 +45,7 @@ const News = () => {
 
   const { data: newsData, loading: newsLoading } = useNewsQuery({
     client,
-    variables: { topic },
+    variables: { topic: activeTopic },
   })
 
   useEffect(() => {
@@ -61,6 +62,8 @@ const News = () => {
     }
   }, [sortBy, newsData, newsLoading])
 
+  const backgroundColor = isDark ? 'gray.600' : 'gray.100'
+
   return (
     <Layout title="CoinNews | Drivechain Exchange">
       <Flex mb="9" alignItems="center">
@@ -69,7 +72,7 @@ const News = () => {
             <Spinner />
           ) : (
             <Heading as="h1" size="lg">
-              {topicsData.topics.find((el) => el.hex === topic)?.name}
+              {topicsData.topics.find((el) => el.hex === activeTopic)?.name}
             </Heading>
           )}
         </Box>
@@ -91,7 +94,10 @@ const News = () => {
                   {topicsData.topics.map((topic) => (
                     <MenuItem
                       key={topic.hex}
-                      onClick={() => setTopic(topic.hex)}
+                      onClick={() => setActiveTopic(topic.hex)}
+                      backgroundColor={
+                        topic.hex === activeTopic ? backgroundColor : undefined
+                      }
                     >
                       {topic.name}
                     </MenuItem>
@@ -111,13 +117,19 @@ const News = () => {
               variant="outline"
             />
             <MenuList>
-              <MenuItem onClick={() => setSortBy('fee')}>
+              <MenuItem
+                onClick={() => setSortBy('fee')}
+                backgroundColor={sortBy === 'fee' ? backgroundColor : undefined}
+              >
                 Sort by fees
-                {sortBy === 'fee' && <Icon ml="4" as={BsCheck} />}
               </MenuItem>
-              <MenuItem onClick={() => setSortBy('date')}>
+              <MenuItem
+                onClick={() => setSortBy('date')}
+                backgroundColor={
+                  sortBy === 'date' ? backgroundColor : undefined
+                }
+              >
                 Sort by date
-                {sortBy === 'date' && <Icon ml="4" as={BsCheck} />}
               </MenuItem>
             </MenuList>
           </Menu>
@@ -125,7 +137,7 @@ const News = () => {
       </Flex>
 
       {newsLoading || !news ? (
-        <Flex justifyContent="center">
+        <Flex justifyContent="center" mx={{ md: '10' }}>
           <Spinner />
         </Flex>
       ) : (
@@ -134,10 +146,11 @@ const News = () => {
             <Flex
               key={index}
               p="5"
-              mb="6"
-              borderWidth="1px"
-              borderRadius="md"
+              borderWidth={`1px 1px ${
+                index === news.length - 1 ? '1px' : '0px'
+              } 1px`}
               overflowX="auto"
+              mx={{ md: '10' }}
             >
               <VStack spacing="2" alignItems="start">
                 <HStack fontSize="xs">
@@ -180,11 +193,7 @@ const News = () => {
                   </Tooltip>
                 </HStack>
 
-                <Text
-                  dangerouslySetInnerHTML={{
-                    __html: replaceUrls(item.content),
-                  }}
-                />
+                <NewsContent text={item.content} />
               </VStack>
             </Flex>
           ))}

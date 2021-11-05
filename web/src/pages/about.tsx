@@ -1,6 +1,7 @@
 import NextLink from 'next/link'
 import { Box, Heading, Link, Text } from '@chakra-ui/react'
 import { Layout } from '../components'
+import { linkColor } from '../utils'
 
 const About = () => {
   return (
@@ -15,7 +16,7 @@ const About = () => {
           <Link
             isExternal
             href="https://github.com/bitcoin/bips/tree/master/bip-0300"
-            fontWeight="bold"
+            color={linkColor}
           >
             BIP 300
           </Link>{' '}
@@ -23,7 +24,7 @@ const About = () => {
           <Link
             isExternal
             href="https://github.com/bitcoin/bips/tree/master/bip-0300"
-            fontWeight="bold"
+            color={linkColor}
           >
             BIP 301
           </Link>
@@ -33,7 +34,7 @@ const About = () => {
           <Link
             isExternal
             href="https://www.drivechain.info/"
-            fontWeight="bold"
+            color={linkColor}
           >
             drivechain.info
           </Link>
@@ -59,8 +60,8 @@ const About = () => {
           CoinNews is a fun invention from the team behind drivechain. If you
           want to try it yourself, download the client at{' '}
           <Link
-            fontWeight="bold"
             isExternal
+            color={linkColor}
             href="https://www.drivechain.info/releases/index.html"
           >
             drivechain.info/releases
@@ -70,7 +71,7 @@ const About = () => {
           fee to miners to have their content stored and organized by topic.
           Have a quick overview of the past CoinNews headlines at{' '}
           <NextLink href="/news" passHref>
-            <Link fontWeight="bold">drivechain.exchange/news</Link>
+            <Link color={linkColor}>drivechain.exchange/news</Link>
           </NextLink>
           .
         </Text>
