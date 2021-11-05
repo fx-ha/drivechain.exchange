@@ -1,0 +1,7 @@
+.newslink a {
+  color: rgb(29, 155, 240);
+}
+
+.newslink a:hover {
+  text-decoration: underline;
+}
