@@ -124,7 +124,9 @@ const Home = () => {
 
             {showDepositAddress && (
               <>
-                <Text mb="2">Send between 0.1 and 1.0 BTC (Testnet) to</Text>
+                <Text mb="2">
+                  Send between 0.1 and 1.0 BTC ({depositChain}) to
+                </Text>
 
                 <Tooltip label="Copy address" placement="bottom">
                   <Box
