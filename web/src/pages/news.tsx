@@ -141,16 +141,13 @@ const News = () => {
           <Spinner />
         </Flex>
       ) : (
-        <>
+        <Box mx={{ md: '10' }} borderWidth="1px 1px 1px 1px" borderRadius="md">
           {news.map((item, index) => (
             <Flex
               key={index}
               p="5"
-              borderWidth={`1px 1px ${
-                index === news.length - 1 ? '1px' : '0px'
-              } 1px`}
+              borderWidth={`${index === 0 ? '0' : '1px'} 0 0 0`}
               overflowX="auto"
-              mx={{ md: '10' }}
             >
               <VStack spacing="2" alignItems="start">
                 <HStack fontSize="xs">
@@ -197,7 +194,7 @@ const News = () => {
               </VStack>
             </Flex>
           ))}
-        </>
+        </Box>
       )}
     </Layout>
   )
