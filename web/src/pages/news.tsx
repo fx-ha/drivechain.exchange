@@ -4,7 +4,6 @@ import {
   Button,
   Flex,
   Heading,
-  HStack,
   IconButton,
   Menu,
   MenuButton,
@@ -12,20 +11,12 @@ import {
   MenuList,
   Spacer,
   Spinner,
-  Text,
-  Tooltip,
   useColorMode,
-  useToast,
-  VStack,
 } from '@chakra-ui/react'
 import { BiSortAlt2 } from 'react-icons/bi'
-import { Layout, NewsContent } from '../components'
+import { Layout, NewsCard } from '../components'
 import { NewsItem, useNewsQuery, useTopicsQuery } from '../generated/graphql'
-import {
-  apolloClient as client,
-  formatDistance,
-  truncateMiddle,
-} from '../utils'
+import { apolloClient as client } from '../utils'
 
 type SortType = 'fee' | 'date'
 
@@ -36,8 +27,6 @@ const News = () => {
 
   const { colorMode } = useColorMode()
   const isDark = colorMode === 'dark'
-
-  const toast = useToast()
 
   const { data: topicsData, loading: topicsLoading } = useTopicsQuery({
     client,
@@ -143,56 +132,7 @@ const News = () => {
       ) : (
         <Box mx={{ md: '10' }} borderWidth="1px 1px 1px 1px" borderRadius="md">
           {news.map((item, index) => (
-            <Flex
-              key={index}
-              p="5"
-              borderWidth={`${index === 0 ? '0' : '1px'} 0 0 0`}
-              overflowX="auto"
-            >
-              <VStack spacing="2" alignItems="start">
-                <HStack fontSize="xs">
-                  <Tooltip label="Copy transaction id" placement="top">
-                    <Text
-                      onClick={() => {
-                        navigator.clipboard.writeText(item.txid)
-                        toast({
-                          title: 'Copied.',
-                          duration: 4000,
-                          isClosable: true,
-                        })
-                      }}
-                      _hover={{
-                        cursor: 'pointer',
-                        textDecoration: 'underline',
-                      }}
-                    >
-                      @{truncateMiddle(item.txid)}
-                    </Text>
-                  </Tooltip>
-
-                  <Text>
-                    {Number(item.fee).toLocaleString('en-US', {
-                      minimumFractionDigits: 4,
-                      maximumFractionDigits: 4,
-                    })}{' '}
-                    ₿
-                  </Text>
-
-                  <Tooltip
-                    label={new Date(
-                      Number(item.block.createdAt)
-                    ).toLocaleString()}
-                    placement="top"
-                  >
-                    <Text>
-                      {formatDistance(new Date(Number(item.block.createdAt)))}
-                    </Text>
-                  </Tooltip>
-                </HStack>
-
-                <NewsContent text={item.content} />
-              </VStack>
-            </Flex>
+            <NewsCard index={index} item={item} key={index} />
           ))}
         </Box>
       )}
