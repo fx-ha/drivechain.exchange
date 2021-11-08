@@ -12,7 +12,7 @@ const NewsCard = ({ item, index }: { item: NewsItem; index: number }) => {
       borderWidth={`${index === 0 ? '0' : '1px'} 0 0 0`}
       overflowX="auto"
     >
-      <VStack spacing="2" alignItems="start">
+      <VStack spacing="2" alignItems="start" w="100%">
         <HStack fontSize="xs">
           <Tooltip label="Copy transaction id" placement="top">
             <Text
