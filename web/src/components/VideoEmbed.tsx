@@ -40,7 +40,7 @@ const VideoEmbed = ({ url }: { url: string }) => {
       onClick={() => setLoadIframe(true)}
       title="Load Youtube Video"
     >
-      <Icon as={AiOutlineYoutube} boxSize="20" />
+      <Icon as={AiOutlineYoutube} color="white" boxSize="20" />
     </Flex>
   )
 }
