@@ -26,7 +26,7 @@ const News = () => {
   const [news, setNews] = useState<NewsItem[]>()
 
   const { colorMode } = useColorMode()
-  const isDark = colorMode === 'dark'
+  const backgroundColor = { dark: 'gray.600', light: 'gray.100' }
 
   const { data: topicsData, loading: topicsLoading } = useTopicsQuery({
     client,
@@ -50,8 +50,6 @@ const News = () => {
       setNews(sorted(sortBy))
     }
   }, [sortBy, newsData, newsLoading])
-
-  const backgroundColor = isDark ? 'gray.600' : 'gray.100'
 
   return (
     <Layout
@@ -88,7 +86,9 @@ const News = () => {
                       key={topic.hex}
                       onClick={() => setActiveTopic(topic.hex)}
                       backgroundColor={
-                        topic.hex === activeTopic ? backgroundColor : undefined
+                        topic.hex === activeTopic
+                          ? backgroundColor[colorMode]
+                          : undefined
                       }
                     >
                       {topic.name}
