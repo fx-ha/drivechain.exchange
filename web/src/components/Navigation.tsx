@@ -13,7 +13,7 @@ import { NavLink } from '.'
 
 const Navigation = () => {
   const { colorMode, toggleColorMode } = useColorMode()
-  const isDark = colorMode === 'dark'
+  const colorModeIcon = { dark: BiSun, light: BiMoon }
 
   return (
     <Flex as="nav" alignItems="center" mt={{ base: '5', sm: '8' }} mb="16">
@@ -32,7 +32,7 @@ const Navigation = () => {
         <Text>|</Text>
         <Icon
           onClick={toggleColorMode}
-          as={isDark ? BiSun : BiMoon}
+          as={colorModeIcon[colorMode]}
           cursor="pointer"
           boxSize={5}
           pb="0.5"
