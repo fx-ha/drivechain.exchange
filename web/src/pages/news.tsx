@@ -54,7 +54,10 @@ const News = () => {
   const backgroundColor = isDark ? 'gray.600' : 'gray.100'
 
   return (
-    <Layout title="CoinNews | Drivechain Exchange">
+    <Layout
+      title="CoinNews | Drivechain Exchange"
+      description="News on drivechain.exchange tracks the Coin News data on the DriveChain testnet"
+    >
       <Flex mb="9" alignItems="center">
         <Box>
           {topicsLoading || !topicsData ? (
