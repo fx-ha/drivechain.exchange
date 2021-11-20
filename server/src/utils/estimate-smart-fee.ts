@@ -12,6 +12,12 @@ const estimateSmartFee = async (
     port
   )
 
+  if (body === undefined) {
+    console.error('cannot estimate smart fee')
+
+    return default_feerate
+  }
+
   const result = JSON.parse(body).result
 
   return typeof result === 'number' ? result : default_feerate

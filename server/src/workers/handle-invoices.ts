@@ -12,7 +12,7 @@ const handleInvoices = async () => {
     const depositChainPort = getPort(invoice.depositChain)
 
     if (depositChainPort === undefined) {
-      console.error('can not get port for deposit chain')
+      console.error('cannot get port for deposit chain')
 
       continue
     }
@@ -39,7 +39,7 @@ const handleInvoices = async () => {
       const receiverChainPort = getPort(receiver.receiveChain)
 
       if (receiverChainPort === undefined) {
-        console.error('can not get port for receiving chain')
+        console.error('cannot get port for receiving chain')
 
         continue
       }

@@ -8,10 +8,16 @@ class AddressResolver {
     const port = getPort(chain)
 
     if (port === undefined) {
-      return 'error'
+      return 'error: cannot find port'
     }
 
-    return await getNewAddress(port)
+    const address = await getNewAddress(port)
+
+    if (address === undefined) {
+      return 'error: cannot get address'
+    }
+
+    return address
   }
 }
 

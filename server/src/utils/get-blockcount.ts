@@ -1,10 +1,14 @@
 import { rpcCall } from '.'
 import { GetBlockCountResponse } from '../types/rpc-responses'
 
-const getBlockcount = async (): Promise<GetBlockCountResponse> => {
-  const countBody = await rpcCall('getblockcount', [])
+const getBlockcount = async (): Promise<GetBlockCountResponse | undefined> => {
+  const body = await rpcCall('getblockcount', [])
 
-  return JSON.parse(countBody).result
+  if (body === undefined) {
+    return
+  }
+
+  return JSON.parse(body).result
 }
 
 export default getBlockcount
