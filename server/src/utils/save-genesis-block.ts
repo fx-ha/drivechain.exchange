@@ -5,23 +5,23 @@ import { rpcCall } from '.'
 const saveGenesisBlock = async () => {
   const genesisHashBody = await rpcCall('getblockhash', [0])
 
-  const genesisHash: GetBlockHashResponse = JSON.parse(genesisHashBody).result
-
-  if (genesisHash === undefined) {
-    console.error('can not get genesis hash')
+  if (genesisHashBody === undefined) {
+    console.error('cannot get genesis hash')
 
     return
   }
+
+  const genesisHash: GetBlockHashResponse = JSON.parse(genesisHashBody).result
 
   const genesisBlockBody = await rpcCall('getblock', [genesisHash])
 
-  const genesisBlock: GetBlockResponse = JSON.parse(genesisBlockBody).result
-
-  if (genesisBlock === undefined) {
-    console.error('can not get data for genesis block')
+  if (genesisBlockBody === undefined) {
+    console.error('cannot get data for genesis block')
 
     return
   }
+
+  const genesisBlock: GetBlockResponse = JSON.parse(genesisBlockBody).result
 
   return await Block.create({
     hash: genesisBlock.hash,

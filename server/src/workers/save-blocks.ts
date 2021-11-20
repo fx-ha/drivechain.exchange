@@ -6,7 +6,7 @@ const saveBlocks = async (): Promise<void> => {
   const blockCount = await getBlockcount()
 
   if (blockCount === undefined) {
-    console.error('can not connect to rpc server')
+    console.error('cannot connect to rpc server')
 
     return
   }
@@ -20,48 +20,49 @@ const saveBlocks = async (): Promise<void> => {
 
     return
   }
+
   if (highestBlock.height === blockCount) {
     console.log('no new blocks')
 
     return
   }
 
-  const body = await rpcCall('getblock', [highestBlock.hash])
+  const highestBlockBody = await rpcCall('getblock', [highestBlock.hash])
 
-  const result: GetBlockResponse = JSON.parse(body).result
-
-  if (result === undefined) {
-    console.error('can not get rpc data for last saved block')
+  if (highestBlockBody === undefined) {
+    console.error('cannot get rpc data for last saved block')
 
     return
   }
 
+  const result: GetBlockResponse = JSON.parse(highestBlockBody).result
+
   let nextblockhash = result.nextblockhash
 
   for (let i = highestBlock.height; i < blockCount; i++) {
-    const body = await rpcCall('getblock', [nextblockhash])
+    const nextBlockBody = await rpcCall('getblock', [nextblockhash])
 
-    const block: GetBlockResponse = JSON.parse(body).result
-
-    if (block === undefined) {
-      console.error(`can not get data block with hash ${nextblockhash}`)
+    if (nextBlockBody === undefined) {
+      console.error(`cannot get data block with hash ${nextblockhash}`)
 
       return
     }
 
+    const nextBlock: GetBlockResponse = JSON.parse(nextBlockBody).result
+
     const savedBlock = await Block.create({
-      hash: block.hash,
-      height: block.height,
-      createdAt: new Date(block.time * 1000),
+      hash: nextBlock.hash,
+      height: nextBlock.height,
+      createdAt: new Date(nextBlock.time * 1000),
     }).save()
 
     if (savedBlock === undefined) {
-      console.error(`can not save block with hash ${nextblockhash} to db`)
+      console.error(`cannot save block with hash ${nextblockhash} to db`)
 
       return
     }
 
-    nextblockhash = block.nextblockhash
+    nextblockhash = nextBlock.nextblockhash
   }
 }
 

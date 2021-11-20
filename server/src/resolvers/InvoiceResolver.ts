@@ -35,6 +35,10 @@ class InvoiceResolver {
 
     const depositAddress = await getNewAddress(port)
 
+    if (depositAddress === undefined) {
+      return null
+    }
+
     const connection = getConnection()
 
     const receivers: Receiver[] = []
