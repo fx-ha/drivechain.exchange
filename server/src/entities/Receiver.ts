@@ -19,6 +19,9 @@ class Receiver {
     onDelete: 'CASCADE',
   })
   invoice!: Invoice
+
+  @Column({ nullable: true })
+  txid?: string
 }
 
 export default Receiver
