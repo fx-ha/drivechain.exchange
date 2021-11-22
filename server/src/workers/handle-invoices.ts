@@ -6,7 +6,7 @@ import {
   sendToAddress,
   subtractServiceFee,
 } from '../utils'
-import { MIN_TRANSACTION_FEE } from '../constants'
+import { MIN_EXCHANGE_AMOUNT } from '../constants'
 
 const handleInvoices = async () => {
   const unpaidInvoices = await Invoice.find({
@@ -28,17 +28,13 @@ const handleInvoices = async () => {
       depositChainPort
     )
 
-    if (depositAmount < 0.1) {
+    if (depositAmount < MIN_EXCHANGE_AMOUNT) {
       console.log(`received insufficient amount for ${invoice.depositAddress}`)
 
       continue
     }
 
-    const receiveEstimate = subtractServiceFee(
-      depositAmount,
-      0,
-      MIN_TRANSACTION_FEE
-    )
+    const receiveEstimate = subtractServiceFee(depositAmount, 0)
 
     await getConnection()
       .createQueryBuilder()
