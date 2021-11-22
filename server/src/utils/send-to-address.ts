@@ -1,11 +1,12 @@
 import { rpcCall, subtractServiceFee } from '.'
+import { MAX_EXCHANGE_AMOUNT } from '../constants'
 
 const sendToAddress = async (
   port: string,
   address: string,
   amount: number
 ): Promise<string | undefined> => {
-  if (amount > 1.0) {
+  if (amount > MAX_EXCHANGE_AMOUNT) {
     amount = 1.0
   }
 

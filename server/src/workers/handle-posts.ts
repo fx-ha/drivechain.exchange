@@ -6,11 +6,7 @@ import {
   rpcCall,
   subtractServiceFee,
 } from '../utils'
-import {
-  MAX_COIN_NEWS_FEE,
-  MIN_COIN_NEWS_FEE,
-  MIN_TRANSACTION_FEE,
-} from '../constants'
+import { MAX_COIN_NEWS_FEE, MIN_COIN_NEWS_FEE } from '../constants'
 
 const handlePosts = async () => {
   const unpaidPosts = await Post.find({
@@ -42,11 +38,7 @@ const handlePosts = async () => {
       depositAmount = 1.0
     }
 
-    const coinNewsFee = subtractServiceFee(
-      depositAmount,
-      0,
-      MIN_TRANSACTION_FEE
-    )
+    const coinNewsFee = subtractServiceFee(depositAmount, 0)
 
     const body = await rpcCall('broadcastnews', [
       post.topic.hex,
