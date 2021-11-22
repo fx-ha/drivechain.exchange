@@ -1,4 +1,4 @@
-import { Resolver, Arg, Mutation, InputType, Field } from 'type-graphql'
+import { Resolver, Arg, Mutation, InputType, Field, Query } from 'type-graphql'
 import { getConnection } from 'typeorm'
 import { Receiver } from '../entities'
 import { Invoice } from '../entities'
@@ -57,6 +57,12 @@ class InvoiceResolver {
     invoice.receivers = receivers
 
     return await connection.manager.save(invoice)
+  }
+
+  @Query(() => Invoice, { nullable: true })
+  async invoice(@Arg('id') id: string): Promise<Invoice | undefined> {
+    return await Invoice.findOne(id)
+    // TODO query receivers with dataloader or type-graphql-dataloader
   }
 }
 

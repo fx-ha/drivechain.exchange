@@ -4,11 +4,14 @@ const sendToAddress = async (
   port: string,
   address: string,
   amount: number
-): Promise<void> => {
-  if (amount > 1.0) amount = 1.0
+): Promise<string | undefined> => {
+  if (amount > 1.0) {
+    amount = 1.0
+  }
+
   amount = subtractServiceFee(amount) // TODO add chainRiskFee depending on chain
 
-  await rpcCall(
+  const body = await rpcCall(
     'sendtoaddress',
     [
       address,
@@ -22,6 +25,14 @@ const sendToAddress = async (
     ],
     port
   )
+
+  if (body === undefined) {
+    console.error('cannot send to address')
+
+    return
+  }
+
+  return JSON.parse(body).result
 }
 
 export default sendToAddress

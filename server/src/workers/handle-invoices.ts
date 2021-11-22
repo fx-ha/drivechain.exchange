@@ -1,6 +1,12 @@
 import { getConnection } from 'typeorm'
-import { Invoice } from '../entities'
-import { getPort, getReceivedByAddress, sendToAddress } from '../utils'
+import { Invoice, Receiver } from '../entities'
+import {
+  getPort,
+  getReceivedByAddress,
+  sendToAddress,
+  subtractServiceFee,
+} from '../utils'
+import { MIN_TRANSACTION_FEE } from '../constants'
 
 const handleInvoices = async () => {
   const unpaidInvoices = await Invoice.find({
@@ -17,21 +23,31 @@ const handleInvoices = async () => {
       continue
     }
 
-    const balance = await getReceivedByAddress(
+    const depositAmount = await getReceivedByAddress(
       invoice.depositAddress,
       depositChainPort
     )
 
-    if (balance < 0.1) {
+    if (depositAmount < 0.1) {
       console.log(`received insufficient amount for ${invoice.depositAddress}`)
 
       continue
     }
 
+    const receiveEstimate = subtractServiceFee(
+      depositAmount,
+      0,
+      MIN_TRANSACTION_FEE
+    )
+
     await getConnection()
       .createQueryBuilder()
       .update(Invoice)
-      .set({ hasDeposited: true })
+      .set({
+        hasDeposited: true,
+        depositAmount,
+        receiveEstimate,
+      })
       .where('id = :id', { id: invoice.id })
       .execute()
 
@@ -44,11 +60,20 @@ const handleInvoices = async () => {
         continue
       }
 
-      await sendToAddress(
+      const txid = await sendToAddress(
         receiverChainPort,
         receiver.receiveAddress,
-        receiver.allocation * balance
+        receiver.allocation * depositAmount
       )
+
+      if (txid !== undefined) {
+        await getConnection()
+          .createQueryBuilder()
+          .update(Receiver)
+          .set({ txid })
+          .where('id = :id', { id: receiver.id })
+          .execute()
+      }
     }
 
     // TODO remove unpaid invoices after x days

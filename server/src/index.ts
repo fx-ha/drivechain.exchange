@@ -11,11 +11,12 @@ import {
   AddressResolver,
   InvoiceResolver,
   NewsResolver,
+  PostResolver,
   TopicResolver,
 } from './resolvers'
 import { createConnection } from 'typeorm'
-import { Block, Invoice, NewsItem, Receiver, Topic } from './entities'
-import { handleInvoices, saveBlocks, saveNews } from './workers'
+import { Block, Invoice, NewsItem, Post, Receiver, Topic } from './entities'
+import { handleInvoices, handlePosts, saveBlocks, saveNews } from './workers'
 
 const main = async (): Promise<void> => {
   // db
@@ -25,7 +26,7 @@ const main = async (): Promise<void> => {
     logging: process.env.DB_LOGGING === 'true' ? true : false,
     synchronize: process.env.DB_SYNC === 'true' ? true : false,
     migrations: [path.join(__dirname, './migrations/*')],
-    entities: [Block, Invoice, Receiver, Topic, NewsItem],
+    entities: [Block, Invoice, Post, Receiver, Topic, NewsItem],
   })
 
   await conn.runMigrations()
@@ -37,6 +38,7 @@ const main = async (): Promise<void> => {
   schedule('5,15,25,35,45,55 * * * *', () => saveNews())
   // run every minute
   schedule('*/1 * * * *', () => handleInvoices())
+  schedule('*/1 * * * *', () => handlePosts())
 
   // express
   const app = express()
@@ -50,7 +52,13 @@ const main = async (): Promise<void> => {
 
   // apollo
   const schema = await buildSchema({
-    resolvers: [AddressResolver, InvoiceResolver, NewsResolver, TopicResolver],
+    resolvers: [
+      AddressResolver,
+      InvoiceResolver,
+      NewsResolver,
+      PostResolver,
+      TopicResolver,
+    ],
   })
 
   const apolloServer = new ApolloServer({

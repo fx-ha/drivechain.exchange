@@ -7,7 +7,7 @@ import {
   OneToMany,
   PrimaryColumn,
 } from 'typeorm'
-import { NewsItem } from '.'
+import { NewsItem, Post } from '.'
 
 @ObjectType()
 @Entity()
@@ -22,6 +22,9 @@ class Topic extends BaseEntity {
 
   @OneToMany(() => NewsItem, (newsItem) => newsItem.topic)
   newsItems?: NewsItem[]
+
+  @OneToMany(() => Post, (post) => post.topic)
+  posts?: Post[]
 
   @Field(() => String)
   @CreateDateColumn()

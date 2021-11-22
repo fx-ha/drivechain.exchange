@@ -1,18 +1,18 @@
-import { Field, ID, ObjectType } from 'type-graphql'
+import { ObjectType, Field, ID } from 'type-graphql'
 import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
   BaseEntity,
-  OneToMany,
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm'
-import { Receiver } from '.'
+import { Topic } from '.'
 
 @ObjectType()
 @Entity()
-class Invoice extends BaseEntity {
+class Post extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   id!: string
@@ -25,20 +25,29 @@ class Invoice extends BaseEntity {
   @Column()
   depositAddress!: string
 
-  @Field({ nullable: true })
-  @Column({ type: 'numeric', scale: 8, nullable: true })
-  depositAmount?: number
-
   @Field()
   @Column({ default: false })
   hasDeposited!: boolean
 
-  @OneToMany(() => Receiver, (receiver) => receiver.invoice, { cascade: true })
-  receivers!: Receiver[]
+  @Field({ nullable: true })
+  @Column({ type: 'numeric', scale: 8, nullable: true })
+  depositAmount?: number
 
   @Field({ nullable: true })
   @Column({ type: 'numeric', scale: 8, nullable: true })
-  receiveEstimate?: number
+  coinNewsFee?: number
+
+  @Field()
+  @Column()
+  text!: string
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  txid?: string
+
+  @Field(() => Topic)
+  @ManyToOne(() => Topic, (topic) => topic.posts)
+  topic!: Topic
 
   @Field(() => String)
   @CreateDateColumn()
@@ -49,4 +58,4 @@ class Invoice extends BaseEntity {
   updatedat!: Date
 }
 
-export default Invoice
+export default Post
