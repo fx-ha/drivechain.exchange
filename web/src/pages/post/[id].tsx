@@ -90,7 +90,7 @@ const PostInvoice = () => {
                   forever!*
                 </Tooltip>{' '}
                 <br />
-                Send between 0.1 and 1.0 BTC ({data.post.depositChain}) to
+                Send between 0.0002 and 1.0 BTC ({data.post.depositChain}) to
               </Text>
 
               <Tooltip label="Copy address" placement="bottom">
