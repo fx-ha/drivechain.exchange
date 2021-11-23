@@ -31,20 +31,29 @@ export type Invoice = {
   __typename?: 'Invoice'
   createdAt: Scalars['String']
   depositAddress: Scalars['String']
+  depositAmount?: Maybe<Scalars['Float']>
   depositChain: Scalars['String']
   hasDeposited: Scalars['Boolean']
   id: Scalars['ID']
+  receiveEstimate?: Maybe<Scalars['Float']>
   updatedat: Scalars['String']
 }
 
 export type Mutation = {
   __typename?: 'Mutation'
   createInvoice?: Maybe<Invoice>
+  createPost?: Maybe<Post>
 }
 
 export type MutationCreateInvoiceArgs = {
   depositChain: Scalars['String']
   receiverData: Array<ReceiverInput>
+}
+
+export type MutationCreatePostArgs = {
+  depositChain: Scalars['String']
+  header: Scalars['String']
+  text: Scalars['String']
 }
 
 export type NewsItem = {
@@ -56,10 +65,27 @@ export type NewsItem = {
   txid: Scalars['String']
 }
 
+export type Post = {
+  __typename?: 'Post'
+  coinNewsFee?: Maybe<Scalars['Float']>
+  createdAt: Scalars['String']
+  depositAddress: Scalars['String']
+  depositAmount?: Maybe<Scalars['Float']>
+  depositChain: Scalars['String']
+  hasDeposited: Scalars['Boolean']
+  id: Scalars['ID']
+  text: Scalars['String']
+  topic: Topic
+  txid?: Maybe<Scalars['String']>
+  updatedat: Scalars['String']
+}
+
 export type Query = {
   __typename?: 'Query'
   addressByChain: Scalars['String']
+  invoice?: Maybe<Invoice>
   newsByTopic: Array<NewsItem>
+  post?: Maybe<Post>
   topics: Array<Topic>
 }
 
@@ -67,8 +93,16 @@ export type QueryAddressByChainArgs = {
   chain: Scalars['String']
 }
 
+export type QueryInvoiceArgs = {
+  id: Scalars['String']
+}
+
 export type QueryNewsByTopicArgs = {
   topic: Scalars['String']
+}
+
+export type QueryPostArgs = {
+  id: Scalars['String']
 }
 
 export type ReceiverInput = {
@@ -105,6 +139,38 @@ export type CreateInvoiceMutation = {
     | undefined
 }
 
+export type CreatePostMutationVariables = Exact<{
+  depositChain: Scalars['String']
+  header: Scalars['String']
+  text: Scalars['String']
+}>
+
+export type CreatePostMutation = {
+  __typename?: 'Mutation'
+  createPost?:
+    | {
+        __typename?: 'Post'
+        id: string
+        depositChain: string
+        depositAddress: string
+        hasDeposited: boolean
+        depositAmount?: number | null | undefined
+        coinNewsFee?: number | null | undefined
+        text: string
+        txid?: string | null | undefined
+        createdAt: string
+        updatedat: string
+        topic: {
+          __typename?: 'Topic'
+          hex: string
+          name: string
+          createdAt: string
+        }
+      }
+    | null
+    | undefined
+}
+
 export type NewsQueryVariables = Exact<{
   topic: Scalars['String']
 }>
@@ -129,6 +195,36 @@ export type NewsQuery = {
       createdAt: string
     }
   }>
+}
+
+export type PostQueryVariables = Exact<{
+  id: Scalars['String']
+}>
+
+export type PostQuery = {
+  __typename?: 'Query'
+  post?:
+    | {
+        __typename?: 'Post'
+        id: string
+        depositChain: string
+        depositAddress: string
+        hasDeposited: boolean
+        depositAmount?: number | null | undefined
+        coinNewsFee?: number | null | undefined
+        text: string
+        txid?: string | null | undefined
+        createdAt: string
+        updatedat: string
+        topic: {
+          __typename?: 'Topic'
+          hex: string
+          name: string
+          createdAt: string
+        }
+      }
+    | null
+    | undefined
 }
 
 export type TopicsQueryVariables = Exact<{ [key: string]: never }>
@@ -197,6 +293,75 @@ export type CreateInvoiceMutationOptions = Apollo.BaseMutationOptions<
   CreateInvoiceMutation,
   CreateInvoiceMutationVariables
 >
+export const CreatePostDocument = gql`
+  mutation CreatePost(
+    $depositChain: String!
+    $header: String!
+    $text: String!
+  ) {
+    createPost(depositChain: $depositChain, header: $header, text: $text) {
+      id
+      depositChain
+      depositAddress
+      hasDeposited
+      depositAmount
+      coinNewsFee
+      text
+      txid
+      topic {
+        hex
+        name
+        createdAt
+      }
+      createdAt
+      updatedat
+    }
+  }
+`
+export type CreatePostMutationFn = Apollo.MutationFunction<
+  CreatePostMutation,
+  CreatePostMutationVariables
+>
+
+/**
+ * __useCreatePostMutation__
+ *
+ * To run a mutation, you first call `useCreatePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPostMutation, { data, loading, error }] = useCreatePostMutation({
+ *   variables: {
+ *      depositChain: // value for 'depositChain'
+ *      header: // value for 'header'
+ *      text: // value for 'text'
+ *   },
+ * });
+ */
+export function useCreatePostMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreatePostMutation,
+    CreatePostMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<CreatePostMutation, CreatePostMutationVariables>(
+    CreatePostDocument,
+    options
+  )
+}
+export type CreatePostMutationHookResult = ReturnType<
+  typeof useCreatePostMutation
+>
+export type CreatePostMutationResult = Apollo.MutationResult<CreatePostMutation>
+export type CreatePostMutationOptions = Apollo.BaseMutationOptions<
+  CreatePostMutation,
+  CreatePostMutationVariables
+>
 export const NewsDocument = gql`
   query News($topic: String!) {
     newsByTopic(topic: $topic) {
@@ -251,6 +416,62 @@ export function useNewsLazyQuery(
 export type NewsQueryHookResult = ReturnType<typeof useNewsQuery>
 export type NewsLazyQueryHookResult = ReturnType<typeof useNewsLazyQuery>
 export type NewsQueryResult = Apollo.QueryResult<NewsQuery, NewsQueryVariables>
+export const PostDocument = gql`
+  query Post($id: String!) {
+    post(id: $id) {
+      id
+      depositChain
+      depositAddress
+      hasDeposited
+      depositAmount
+      coinNewsFee
+      text
+      txid
+      topic {
+        hex
+        name
+        createdAt
+      }
+      createdAt
+      updatedat
+    }
+  }
+`
+
+/**
+ * __usePostQuery__
+ *
+ * To run a query within a React component, call `usePostQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePostQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePostQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function usePostQuery(
+  baseOptions: Apollo.QueryHookOptions<PostQuery, PostQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<PostQuery, PostQueryVariables>(PostDocument, options)
+}
+export function usePostLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<PostQuery, PostQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<PostQuery, PostQueryVariables>(
+    PostDocument,
+    options
+  )
+}
+export type PostQueryHookResult = ReturnType<typeof usePostQuery>
+export type PostLazyQueryHookResult = ReturnType<typeof usePostLazyQuery>
+export type PostQueryResult = Apollo.QueryResult<PostQuery, PostQueryVariables>
 export const TopicsDocument = gql`
   query Topics {
     topics {

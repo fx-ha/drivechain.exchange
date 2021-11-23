@@ -14,7 +14,7 @@ import {
   useColorMode,
 } from '@chakra-ui/react'
 import { BiSortAlt2 } from 'react-icons/bi'
-import { Layout, NewsCard } from '../components'
+import { Layout, NewsCard, PostInput } from '../components'
 import { NewsItem, useNewsQuery, useTopicsQuery } from '../generated/graphql'
 import { apolloClient as client } from '../utils'
 
@@ -35,6 +35,7 @@ const News = () => {
   const { data: newsData, loading: newsLoading } = useNewsQuery({
     client,
     variables: { topic: activeTopic },
+    pollInterval: 1000 * 60 * 10,
   })
 
   useEffect(() => {
@@ -127,6 +128,8 @@ const News = () => {
           </Menu>
         </Box>
       </Flex>
+
+      <PostInput topics={topicsData} />
 
       {newsLoading || !news ? (
         <Flex justifyContent="center" mx={{ md: '10' }}>

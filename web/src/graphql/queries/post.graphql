@@ -1,0 +1,19 @@
+query Post($id: String!) {
+  post(id: $id) {
+    id
+    depositChain
+    depositAddress
+    hasDeposited
+    depositAmount
+    coinNewsFee
+    text
+    txid
+    topic {
+      hex
+      name
+      createdAt
+    }
+    createdAt
+    updatedat
+  }
+}

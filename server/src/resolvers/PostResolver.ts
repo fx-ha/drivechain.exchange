@@ -7,7 +7,7 @@ class PostResolver {
   @Mutation(() => Post, { nullable: true })
   async createPost(
     @Arg('depositChain') depositChain: string,
-    @Arg('topic') header: string,
+    @Arg('header') header: string,
     @Arg('text') text: string
   ): Promise<Post | null> {
     const port = getPort(depositChain)

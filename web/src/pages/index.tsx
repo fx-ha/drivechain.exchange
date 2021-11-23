@@ -18,10 +18,7 @@ import { useCreateInvoiceMutation } from '../generated/graphql'
 import { apolloClient as client } from '../utils'
 
 const Home = () => {
-  const borderColor = useColorModeValue(
-    'var(--chakra-colors-gray-300)',
-    'var(--chakra-colors-whiteAlpha-400)'
-  )
+  const borderColor = useColorModeValue('gray.300', 'white400')
   const toast = useToast()
 
   const [depositChain, setDeposit] = useState('zside')
