@@ -30,7 +30,6 @@ const SelectField = ({
       <Select
         {...field}
         {...props}
-        // id={`${props.id}-${props.name}-select`}
         id={field.name}
         placeholder={props.placeholder}
         isRequired={isRequired}

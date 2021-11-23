@@ -20,10 +20,7 @@ import { apolloClient as client, formatDistance } from '../../utils'
 const PostInvoice = () => {
   const router = useRouter()
 
-  const borderColor = useColorModeValue(
-    'var(--chakra-colors-gray-300)',
-    'var(--chakra-colors-whiteAlpha-400)'
-  )
+  const borderColor = useColorModeValue('gray.300', 'white.400')
   const toast = useToast()
 
   const id = typeof router.query.id === 'string' ? router.query.id : ''
@@ -31,7 +28,7 @@ const PostInvoice = () => {
   const { data, loading, error } = usePostQuery({
     client,
     variables: { id },
-    pollInterval: 1000 * 5,
+    pollInterval: 1000 * 60 * 2,
   })
 
   if (loading || !data || !data.post) {
@@ -48,7 +45,7 @@ const PostInvoice = () => {
     return (
       <Layout title="Post | Drivechain Exchange">
         <Flex justifyContent="center">
-          <Box></Box>
+          <Box>{error.message}</Box>
         </Flex>
       </Layout>
     )
