@@ -4,8 +4,7 @@ import { Form, Formik } from 'formik'
 import { useRouter } from 'next/router'
 import { TopicsQuery, useCreatePostMutation } from '../generated/graphql'
 import { apolloClient as client } from '../utils'
-import { InputField, TextareaField } from '.'
-import SelectField from './SelectField'
+import { InputField, SelectField, TextareaField } from '.'
 
 const PostInput = ({ topics }: { topics: TopicsQuery | undefined }) => {
   const [showPostOptions, setShowPostOptions] = useState(false)
