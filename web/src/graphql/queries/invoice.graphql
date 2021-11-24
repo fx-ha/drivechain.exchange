@@ -1,0 +1,12 @@
+query Invoice($id: String!) {
+  invoice(id: $id) {
+    id
+    depositChain
+    depositAddress
+    depositAmount
+    hasDeposited
+    receiveEstimate
+    createdAt
+    updatedat
+  }
+}

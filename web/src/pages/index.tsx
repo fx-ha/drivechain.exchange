@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useRouter } from 'next/router'
 import {
   Box,
   Button,
@@ -7,10 +8,6 @@ import {
   Input,
   Select,
   Spacer,
-  Text,
-  Tooltip,
-  useColorModeValue,
-  useToast,
 } from '@chakra-ui/react'
 import { AiOutlineSwap } from 'react-icons/ai'
 import { Layout } from '../components'
@@ -18,25 +15,21 @@ import { useCreateInvoiceMutation } from '../generated/graphql'
 import { apolloClient as client } from '../utils'
 
 const Home = () => {
-  const borderColor = useColorModeValue('gray.300', 'white400')
-  const toast = useToast()
+  const router = useRouter()
 
   const [depositChain, setDeposit] = useState('zside')
   const [receiveChain, setReceive] = useState('drivenet')
 
   const [receiveAddress, setReceiveAddress] = useState('')
-  const [depositAddress, setDepositAddress] = useState('')
-
-  const [showDepositAddress, setShowDepositAddress] = useState(false)
 
   const [createInvoice, { loading, error }] = useCreateInvoiceMutation({
     client,
   })
 
+  // TODO refactor with formik
   const handleExchange = async (): Promise<void> => {
     if (receiveAddress === '') {
       alert('Please provide your receive address')
-      setShowDepositAddress(false)
     } else {
       const result = await createInvoice({
         variables: {
@@ -47,10 +40,8 @@ const Home = () => {
 
       if (!result.data || !result.data.createInvoice || error) {
         alert('Error creating invoice')
-        setShowDepositAddress(false)
       } else {
-        setDepositAddress(result.data.createInvoice.depositAddress)
-        setShowDepositAddress(true)
+        router.push(`/invoice/${result.data.createInvoice.id}`)
       }
     }
   }
@@ -118,54 +109,6 @@ const Home = () => {
                 Exchange now
               </Button>
             </Box>
-
-            {showDepositAddress && (
-              <>
-                <Text mb="2">
-                  Send between 0.1 and 1.0 BTC ({depositChain}) to
-                </Text>
-
-                <Tooltip label="Copy address" placement="bottom">
-                  <Box
-                    w="100%"
-                    maxW="352px"
-                    fontSize={{ base: 'sm', sm: 'md' }}
-                    textAlign="center"
-                    value={depositAddress}
-                    cursor="pointer"
-                    border="1px solid"
-                    borderRadius="md"
-                    paddingInlineStart="4"
-                    paddingInlineEnd="4"
-                    outline="2px solid transparent"
-                    height="10"
-                    position="relative"
-                    borderColor="inherit"
-                    padding="0"
-                    lineHeight="inherit"
-                    color="inherit"
-                    fontFamily="inherit"
-                    margin="0"
-                    pt="2"
-                    _hover={{ borderColor }}
-                    onClick={(e) => {
-                      navigator.clipboard.writeText(
-                        e.currentTarget.textContent !== null
-                          ? e.currentTarget.textContent
-                          : ''
-                      )
-                      toast({
-                        title: 'Copied.',
-                        duration: 4000,
-                        isClosable: true,
-                      })
-                    }}
-                  >
-                    {depositAddress}
-                  </Box>
-                </Tooltip>
-              </>
-            )}
           </Flex>
         </Box>
         <Spacer />
