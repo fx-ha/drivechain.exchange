@@ -171,6 +171,28 @@ export type CreatePostMutation = {
     | undefined
 }
 
+export type InvoiceQueryVariables = Exact<{
+  id: Scalars['String']
+}>
+
+export type InvoiceQuery = {
+  __typename?: 'Query'
+  invoice?:
+    | {
+        __typename?: 'Invoice'
+        id: string
+        depositChain: string
+        depositAddress: string
+        depositAmount?: number | null | undefined
+        hasDeposited: boolean
+        receiveEstimate?: number | null | undefined
+        createdAt: string
+        updatedat: string
+      }
+    | null
+    | undefined
+}
+
 export type NewsQueryVariables = Exact<{
   topic: Scalars['String']
 }>
@@ -361,6 +383,61 @@ export type CreatePostMutationResult = Apollo.MutationResult<CreatePostMutation>
 export type CreatePostMutationOptions = Apollo.BaseMutationOptions<
   CreatePostMutation,
   CreatePostMutationVariables
+>
+export const InvoiceDocument = gql`
+  query Invoice($id: String!) {
+    invoice(id: $id) {
+      id
+      depositChain
+      depositAddress
+      depositAmount
+      hasDeposited
+      receiveEstimate
+      createdAt
+      updatedat
+    }
+  }
+`
+
+/**
+ * __useInvoiceQuery__
+ *
+ * To run a query within a React component, call `useInvoiceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInvoiceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInvoiceQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useInvoiceQuery(
+  baseOptions: Apollo.QueryHookOptions<InvoiceQuery, InvoiceQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<InvoiceQuery, InvoiceQueryVariables>(
+    InvoiceDocument,
+    options
+  )
+}
+export function useInvoiceLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<InvoiceQuery, InvoiceQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<InvoiceQuery, InvoiceQueryVariables>(
+    InvoiceDocument,
+    options
+  )
+}
+export type InvoiceQueryHookResult = ReturnType<typeof useInvoiceQuery>
+export type InvoiceLazyQueryHookResult = ReturnType<typeof useInvoiceLazyQuery>
+export type InvoiceQueryResult = Apollo.QueryResult<
+  InvoiceQuery,
+  InvoiceQueryVariables
 >
 export const NewsDocument = gql`
   query News($topic: String!) {
