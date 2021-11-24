@@ -117,14 +117,16 @@ const News = () => {
             <MenuList>
               <MenuItem
                 onClick={() => setSortBy('fee')}
-                backgroundColor={sortBy === 'fee' ? backgroundColor : undefined}
+                backgroundColor={
+                  sortBy === 'fee' ? backgroundColor[colorMode] : undefined
+                }
               >
                 Sort by fees
               </MenuItem>
               <MenuItem
                 onClick={() => setSortBy('date')}
                 backgroundColor={
-                  sortBy === 'date' ? backgroundColor : undefined
+                  sortBy === 'date' ? backgroundColor[colorMode] : undefined
                 }
               >
                 Sort by date
