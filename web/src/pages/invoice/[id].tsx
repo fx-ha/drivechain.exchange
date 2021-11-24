@@ -14,7 +14,7 @@ import { Layout } from '../../components'
 import { useInvoiceQuery } from '../../generated/graphql'
 import { apolloClient as client } from '../../utils'
 
-const PostInvoice = () => {
+const Invoice = () => {
   const router = useRouter()
 
   const borderColor = useColorModeValue('gray.300', 'white.400')
@@ -134,7 +134,7 @@ const PostInvoice = () => {
     )
   }
 
-  return <Layout title="Post | Drivechain Exchange">Unknown error...</Layout>
+  return <Layout title="Invoice | Drivechain Exchange">Unknown error...</Layout>
 }
 
-export default PostInvoice
+export default Invoice
