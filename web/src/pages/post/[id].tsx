@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router'
 import {
   Box,
+  Button,
   Flex,
   Heading,
   HStack,
@@ -244,6 +245,13 @@ const PostInvoice = () => {
                 </Box>
               </Tooltip>
             </Flex>
+
+            <Button
+              mt="8"
+              onClick={() => router.push(`/news/${data.post?.topic.hex}`)}
+            >
+              View {data.post.topic.name}
+            </Button>
           </Box>
 
           <Spacer />

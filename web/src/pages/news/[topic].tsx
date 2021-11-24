@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 import {
   Box,
   Button,
@@ -14,16 +15,20 @@ import {
   useColorMode,
 } from '@chakra-ui/react'
 import { BiSortAlt2 } from 'react-icons/bi'
-import { Layout, NewsCard, PostInput } from '../components'
-import { NewsItem, useNewsQuery, useTopicsQuery } from '../generated/graphql'
-import { apolloClient as client } from '../utils'
+import { Layout, NewsCard, PostInput } from '../../components'
+import { NewsItem, useNewsQuery, useTopicsQuery } from '../../generated/graphql'
+import { apolloClient as client } from '../../utils'
 
 type SortType = 'fee' | 'date'
 
 const News = () => {
-  const [activeTopic, setActiveTopic] = useState('a1a1a1a1')
   const [sortBy, setSortBy] = useState<SortType>('date')
   const [news, setNews] = useState<NewsItem[]>()
+
+  const router = useRouter()
+
+  const activeTopic =
+    typeof router.query.topic === 'string' ? router.query.topic : 'a1a1a1a1'
 
   const { colorMode } = useColorMode()
   const backgroundColor = { dark: 'gray.600', light: 'gray.100' }
@@ -85,7 +90,7 @@ const News = () => {
                   {topicsData.topics.map((topic) => (
                     <MenuItem
                       key={topic.hex}
-                      onClick={() => setActiveTopic(topic.hex)}
+                      onClick={() => router.push(topic.hex)}
                       backgroundColor={
                         topic.hex === activeTopic
                           ? backgroundColor[colorMode]
@@ -112,14 +117,16 @@ const News = () => {
             <MenuList>
               <MenuItem
                 onClick={() => setSortBy('fee')}
-                backgroundColor={sortBy === 'fee' ? backgroundColor : undefined}
+                backgroundColor={
+                  sortBy === 'fee' ? backgroundColor[colorMode] : undefined
+                }
               >
                 Sort by fees
               </MenuItem>
               <MenuItem
                 onClick={() => setSortBy('date')}
                 backgroundColor={
-                  sortBy === 'date' ? backgroundColor : undefined
+                  sortBy === 'date' ? backgroundColor[colorMode] : undefined
                 }
               >
                 Sort by date
@@ -136,7 +143,7 @@ const News = () => {
           <Spinner />
         </Flex>
       ) : (
-        <Box mx={{ md: '10' }} borderWidth="1px 1px 1px 1px" borderRadius="md">
+        <Box mx={{ md: '10' }} borderWidth="1px" borderRadius="md">
           {news.map((item, index) => (
             <NewsCard index={index} item={item} key={index} />
           ))}

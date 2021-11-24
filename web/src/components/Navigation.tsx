@@ -24,7 +24,7 @@ const Navigation = () => {
       <Spacer />
 
       <HStack spacing={3}>
-        <NavLink href="/news">News</NavLink>
+        <NavLink href="/news/a1a1a1a1">News</NavLink>
         <Text>|</Text>
         <NavLink href="/faucet">Faucet</NavLink>
         <Text>|</Text>
