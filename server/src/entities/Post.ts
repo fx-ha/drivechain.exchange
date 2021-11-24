@@ -50,12 +50,12 @@ class Post extends BaseEntity {
   topic!: Topic
 
   @Field(() => String)
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt!: Date
 
   @Field(() => String)
-  @UpdateDateColumn()
-  updatedat!: Date
+  @UpdateDateColumn({ type: 'timestamptz' })
+  updatedAt!: Date
 }
 
 export default Post

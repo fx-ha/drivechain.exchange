@@ -181,7 +181,7 @@ const PostInvoice = () => {
 
                   <Tooltip
                     label={new Date(
-                      Number(data.post.updatedat)
+                      Number(data.post.updatedAt)
                     ).toLocaleString()}
                     placement="top"
                   >

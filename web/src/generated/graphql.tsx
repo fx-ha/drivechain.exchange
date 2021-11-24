@@ -27,6 +27,18 @@ export type Block = {
   height: Scalars['Float']
 }
 
+export type FaucetRequest = {
+  __typename?: 'FaucetRequest'
+  address: Scalars['String']
+  amount: Scalars['Float']
+  chain: Scalars['String']
+  createdAt: Scalars['String']
+  id: Scalars['ID']
+  isPaid: Scalars['Boolean']
+  txid?: Maybe<Scalars['String']>
+  updatedAt: Scalars['String']
+}
+
 export type Invoice = {
   __typename?: 'Invoice'
   createdAt: Scalars['String']
@@ -36,13 +48,19 @@ export type Invoice = {
   hasDeposited: Scalars['Boolean']
   id: Scalars['ID']
   receiveEstimate?: Maybe<Scalars['Float']>
-  updatedat: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type Mutation = {
   __typename?: 'Mutation'
+  createFaucetRequest?: Maybe<FaucetRequest>
   createInvoice?: Maybe<Invoice>
   createPost?: Maybe<Post>
+}
+
+export type MutationCreateFaucetRequestArgs = {
+  address: Scalars['String']
+  chain: Scalars['String']
 }
 
 export type MutationCreateInvoiceArgs = {
@@ -77,12 +95,13 @@ export type Post = {
   text: Scalars['String']
   topic: Topic
   txid?: Maybe<Scalars['String']>
-  updatedat: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type Query = {
   __typename?: 'Query'
   addressByChain: Scalars['String']
+  faucetRequest?: Maybe<FaucetRequest>
   invoice?: Maybe<Invoice>
   newsByTopic: Array<NewsItem>
   post?: Maybe<Post>
@@ -91,6 +110,10 @@ export type Query = {
 
 export type QueryAddressByChainArgs = {
   chain: Scalars['String']
+}
+
+export type QueryFaucetRequestArgs = {
+  id: Scalars['String']
 }
 
 export type QueryInvoiceArgs = {
@@ -118,6 +141,29 @@ export type Topic = {
   name: Scalars['String']
 }
 
+export type CreateFaucetRequestMutationVariables = Exact<{
+  chain: Scalars['String']
+  address: Scalars['String']
+}>
+
+export type CreateFaucetRequestMutation = {
+  __typename?: 'Mutation'
+  createFaucetRequest?:
+    | {
+        __typename?: 'FaucetRequest'
+        id: string
+        chain: string
+        address: string
+        amount: number
+        isPaid: boolean
+        txid?: string | null | undefined
+        createdAt: string
+        updatedAt: string
+      }
+    | null
+    | undefined
+}
+
 export type CreateInvoiceMutationVariables = Exact<{
   depositChain: Scalars['String']
   receiverData: Array<ReceiverInput> | ReceiverInput
@@ -133,7 +179,7 @@ export type CreateInvoiceMutation = {
         depositAddress: string
         hasDeposited: boolean
         createdAt: string
-        updatedat: string
+        updatedAt: string
       }
     | null
     | undefined
@@ -159,13 +205,35 @@ export type CreatePostMutation = {
         text: string
         txid?: string | null | undefined
         createdAt: string
-        updatedat: string
+        updatedAt: string
         topic: {
           __typename?: 'Topic'
           hex: string
           name: string
           createdAt: string
         }
+      }
+    | null
+    | undefined
+}
+
+export type FaucetRequestQueryVariables = Exact<{
+  id: Scalars['String']
+}>
+
+export type FaucetRequestQuery = {
+  __typename?: 'Query'
+  faucetRequest?:
+    | {
+        __typename?: 'FaucetRequest'
+        id: string
+        chain: string
+        address: string
+        amount: number
+        isPaid: boolean
+        txid?: string | null | undefined
+        createdAt: string
+        updatedAt: string
       }
     | null
     | undefined
@@ -187,7 +255,7 @@ export type InvoiceQuery = {
         hasDeposited: boolean
         receiveEstimate?: number | null | undefined
         createdAt: string
-        updatedat: string
+        updatedAt: string
       }
     | null
     | undefined
@@ -237,7 +305,7 @@ export type PostQuery = {
         text: string
         txid?: string | null | undefined
         createdAt: string
-        updatedat: string
+        updatedAt: string
         topic: {
           __typename?: 'Topic'
           hex: string
@@ -256,6 +324,64 @@ export type TopicsQuery = {
   topics: Array<{ __typename?: 'Topic'; hex: string; name: string }>
 }
 
+export const CreateFaucetRequestDocument = gql`
+  mutation CreateFaucetRequest($chain: String!, $address: String!) {
+    createFaucetRequest(chain: $chain, address: $address) {
+      id
+      chain
+      address
+      amount
+      isPaid
+      txid
+      createdAt
+      updatedAt
+    }
+  }
+`
+export type CreateFaucetRequestMutationFn = Apollo.MutationFunction<
+  CreateFaucetRequestMutation,
+  CreateFaucetRequestMutationVariables
+>
+
+/**
+ * __useCreateFaucetRequestMutation__
+ *
+ * To run a mutation, you first call `useCreateFaucetRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateFaucetRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createFaucetRequestMutation, { data, loading, error }] = useCreateFaucetRequestMutation({
+ *   variables: {
+ *      chain: // value for 'chain'
+ *      address: // value for 'address'
+ *   },
+ * });
+ */
+export function useCreateFaucetRequestMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateFaucetRequestMutation,
+    CreateFaucetRequestMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<
+    CreateFaucetRequestMutation,
+    CreateFaucetRequestMutationVariables
+  >(CreateFaucetRequestDocument, options)
+}
+export type CreateFaucetRequestMutationHookResult = ReturnType<
+  typeof useCreateFaucetRequestMutation
+>
+export type CreateFaucetRequestMutationResult =
+  Apollo.MutationResult<CreateFaucetRequestMutation>
+export type CreateFaucetRequestMutationOptions = Apollo.BaseMutationOptions<
+  CreateFaucetRequestMutation,
+  CreateFaucetRequestMutationVariables
+>
 export const CreateInvoiceDocument = gql`
   mutation CreateInvoice(
     $depositChain: String!
@@ -267,7 +393,7 @@ export const CreateInvoiceDocument = gql`
       depositAddress
       hasDeposited
       createdAt
-      updatedat
+      updatedAt
     }
   }
 `
@@ -336,7 +462,7 @@ export const CreatePostDocument = gql`
         createdAt
       }
       createdAt
-      updatedat
+      updatedAt
     }
   }
 `
@@ -384,6 +510,71 @@ export type CreatePostMutationOptions = Apollo.BaseMutationOptions<
   CreatePostMutation,
   CreatePostMutationVariables
 >
+export const FaucetRequestDocument = gql`
+  query FaucetRequest($id: String!) {
+    faucetRequest(id: $id) {
+      id
+      chain
+      address
+      amount
+      isPaid
+      txid
+      createdAt
+      updatedAt
+    }
+  }
+`
+
+/**
+ * __useFaucetRequestQuery__
+ *
+ * To run a query within a React component, call `useFaucetRequestQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFaucetRequestQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFaucetRequestQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useFaucetRequestQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    FaucetRequestQuery,
+    FaucetRequestQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<FaucetRequestQuery, FaucetRequestQueryVariables>(
+    FaucetRequestDocument,
+    options
+  )
+}
+export function useFaucetRequestLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    FaucetRequestQuery,
+    FaucetRequestQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<FaucetRequestQuery, FaucetRequestQueryVariables>(
+    FaucetRequestDocument,
+    options
+  )
+}
+export type FaucetRequestQueryHookResult = ReturnType<
+  typeof useFaucetRequestQuery
+>
+export type FaucetRequestLazyQueryHookResult = ReturnType<
+  typeof useFaucetRequestLazyQuery
+>
+export type FaucetRequestQueryResult = Apollo.QueryResult<
+  FaucetRequestQuery,
+  FaucetRequestQueryVariables
+>
 export const InvoiceDocument = gql`
   query Invoice($id: String!) {
     invoice(id: $id) {
@@ -394,7 +585,7 @@ export const InvoiceDocument = gql`
       hasDeposited
       receiveEstimate
       createdAt
-      updatedat
+      updatedAt
     }
   }
 `
@@ -510,7 +701,7 @@ export const PostDocument = gql`
         createdAt
       }
       createdAt
-      updatedat
+      updatedAt
     }
   }
 `
