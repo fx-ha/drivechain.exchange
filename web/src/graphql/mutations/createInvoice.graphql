@@ -5,6 +5,6 @@ mutation CreateInvoice($depositChain: String!, $receiverData: [ReceiverInput!]!)
     depositAddress
     hasDeposited
     createdAt
-    updatedat
+    updatedAt
   }
 }

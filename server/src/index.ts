@@ -9,14 +9,29 @@ import { buildSchema } from 'type-graphql'
 import { schedule } from 'node-cron'
 import {
   AddressResolver,
+  FaucetResolver,
   InvoiceResolver,
   NewsResolver,
   PostResolver,
   TopicResolver,
 } from './resolvers'
 import { createConnection } from 'typeorm'
-import { Block, Invoice, NewsItem, Post, Receiver, Topic } from './entities'
-import { handleInvoices, handlePosts, saveBlocks, saveNews } from './workers'
+import {
+  Block,
+  FaucetRequest,
+  Invoice,
+  NewsItem,
+  Post,
+  Receiver,
+  Topic,
+} from './entities'
+import {
+  handleFaucet,
+  handleInvoices,
+  handlePosts,
+  saveBlocks,
+  saveNews,
+} from './workers'
 
 const main = async (): Promise<void> => {
   // db
@@ -26,7 +41,7 @@ const main = async (): Promise<void> => {
     logging: process.env.DB_LOGGING === 'true' ? true : false,
     synchronize: process.env.DB_SYNC === 'true' ? true : false,
     migrations: [path.join(__dirname, './migrations/*')],
-    entities: [Block, Invoice, Post, Receiver, Topic, NewsItem],
+    entities: [Block, FaucetRequest, Invoice, Post, Receiver, Topic, NewsItem],
   })
 
   await conn.runMigrations()
@@ -39,6 +54,7 @@ const main = async (): Promise<void> => {
   // run every minute
   schedule('*/1 * * * *', () => handleInvoices())
   schedule('*/1 * * * *', () => handlePosts())
+  schedule('*/1 * * * *', () => handleFaucet())
 
   // express
   const app = express()
@@ -54,6 +70,7 @@ const main = async (): Promise<void> => {
   const schema = await buildSchema({
     resolvers: [
       AddressResolver,
+      FaucetResolver,
       InvoiceResolver,
       NewsResolver,
       PostResolver,

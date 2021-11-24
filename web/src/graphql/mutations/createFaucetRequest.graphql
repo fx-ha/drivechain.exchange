@@ -1,0 +1,12 @@
+mutation CreateFaucetRequest($chain: String!, $address: String!) {
+  createFaucetRequest(chain: $chain, address: $address) {
+    id
+    chain
+    address
+    amount
+    isPaid
+    txid
+    createdAt
+    updatedAt
+  }
+}

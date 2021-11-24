@@ -1,0 +1,12 @@
+query FaucetRequest($id: String!) {
+  faucetRequest(id: $id) {
+    id
+    chain
+    address
+    amount
+    isPaid
+    txid
+    createdAt
+    updatedAt
+  }
+}

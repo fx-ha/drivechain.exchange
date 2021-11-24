@@ -6,39 +6,34 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   BaseEntity,
-  OneToMany,
 } from 'typeorm'
-import { Receiver } from '.'
 
 @ObjectType()
 @Entity()
-class Invoice extends BaseEntity {
+class FaucetRequest extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
   @Field()
   @Column()
-  depositChain!: string
+  chain!: string
 
   @Field()
   @Column()
-  depositAddress!: string
+  address!: string
 
-  @Field({ nullable: true })
-  @Column({ type: 'numeric', scale: 8, nullable: true })
-  depositAmount?: number
+  @Field()
+  @Column({ type: 'numeric', scale: 8 })
+  amount!: number
 
   @Field()
   @Column({ default: false })
-  hasDeposited!: boolean
-
-  @OneToMany(() => Receiver, (receiver) => receiver.invoice, { cascade: true })
-  receivers!: Receiver[]
+  isPaid!: boolean
 
   @Field({ nullable: true })
-  @Column({ type: 'numeric', scale: 8, nullable: true })
-  receiveEstimate?: number
+  @Column({ nullable: true })
+  txid?: string
 
   @Field(() => String)
   @CreateDateColumn({ type: 'timestamptz' })
@@ -49,4 +44,4 @@ class Invoice extends BaseEntity {
   updatedAt!: Date
 }
 
-export default Invoice
+export default FaucetRequest

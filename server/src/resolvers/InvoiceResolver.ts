@@ -1,7 +1,6 @@
 import { Resolver, Arg, Mutation, InputType, Field, Query } from 'type-graphql'
 import { getConnection } from 'typeorm'
-import { Receiver } from '../entities'
-import { Invoice } from '../entities'
+import { Invoice, Receiver } from '../entities'
 import { getNewAddress, getPort } from '../utils'
 
 @InputType()

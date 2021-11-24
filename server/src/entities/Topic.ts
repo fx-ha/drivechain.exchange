@@ -27,7 +27,7 @@ class Topic extends BaseEntity {
   posts?: Post[]
 
   @Field(() => String)
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt!: Date
 }
 
