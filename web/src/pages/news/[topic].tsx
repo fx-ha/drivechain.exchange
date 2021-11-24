@@ -17,7 +17,7 @@ import {
 import { BiSortAlt2 } from 'react-icons/bi'
 import { Layout, NewsCard, PostInput } from '../../components'
 import { NewsItem, useNewsQuery, useTopicsQuery } from '../../generated/graphql'
-import { apolloClient as client, isServer } from '../../utils'
+import { apolloClient as client } from '../../utils'
 
 type SortType = 'fee' | 'date'
 
@@ -90,9 +90,7 @@ const News = () => {
                   {topicsData.topics.map((topic) => (
                     <MenuItem
                       key={topic.hex}
-                      onClick={() =>
-                        isServer() ? null : router.push(topic.hex)
-                      }
+                      onClick={() => router.push(topic.hex)}
                       backgroundColor={
                         topic.hex === activeTopic
                           ? backgroundColor[colorMode]
