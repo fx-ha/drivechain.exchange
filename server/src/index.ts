@@ -98,7 +98,7 @@ const main = async (): Promise<void> => {
         httpOnly: true,
         sameSite: 'lax', // csrf
         secure: __prod__, // true -> cookie only works in https
-        domain: __prod__ ? '.drivechain.exchange' : undefined,
+        domain: __prod__ ? process.env.DOMAIN : undefined,
       },
       saveUninitialized: false, // don't store empty sessions
       secret: process.env.SESSION_SECRET,

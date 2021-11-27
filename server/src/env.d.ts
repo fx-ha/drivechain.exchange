@@ -14,5 +14,6 @@ declare namespace NodeJS {
     MIN_CONF: string
     SESSION_SECRET: string
     REDIS_URL: string
+    DOMAIN: string
   }
 }
