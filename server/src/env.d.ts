@@ -12,5 +12,7 @@ declare namespace NodeJS {
     TRAINCHAIN_PORT: string
     ZSIDE_PORT: string
     MIN_CONF: string
+    SESSION_SECRET: string
+    REDIS_URL: string
   }
 }

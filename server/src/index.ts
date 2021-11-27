@@ -2,6 +2,9 @@ import 'reflect-metadata'
 import 'dotenv-safe/config'
 import path from 'path'
 import express from 'express'
+import Redis from 'ioredis'
+import session from 'express-session'
+import connectRedis from 'connect-redis'
 import cors from 'cors'
 import { ApolloServer } from 'apollo-server-express'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
@@ -14,6 +17,7 @@ import {
   NewsResolver,
   PostResolver,
   TopicResolver,
+  UserResolver,
 } from './resolvers'
 import { createConnection } from 'typeorm'
 import {
@@ -24,6 +28,7 @@ import {
   Post,
   Receiver,
   Topic,
+  User,
 } from './entities'
 import {
   handleFaucet,
@@ -32,6 +37,8 @@ import {
   saveBlocks,
   saveNews,
 } from './workers'
+import { COOKIE_NAME, __prod__ } from './constants'
+import { MyContext } from './types/my-context'
 
 const main = async (): Promise<void> => {
   // db
@@ -41,7 +48,16 @@ const main = async (): Promise<void> => {
     logging: process.env.DB_LOGGING === 'true' ? true : false,
     synchronize: process.env.DB_SYNC === 'true' ? true : false,
     migrations: [path.join(__dirname, './migrations/*')],
-    entities: [Block, FaucetRequest, Invoice, Post, Receiver, Topic, NewsItem],
+    entities: [
+      Block,
+      FaucetRequest,
+      Invoice,
+      Post,
+      Receiver,
+      Topic,
+      NewsItem,
+      User,
+    ],
   })
 
   await conn.runMigrations()
@@ -66,6 +82,30 @@ const main = async (): Promise<void> => {
   // cors
   app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }))
 
+  // redis
+  const RedisStore = connectRedis(session)
+  const redis = new Redis(process.env.REDIS_URL)
+  app.set('trust proxy', 1)
+  app.use(
+    session({
+      name: COOKIE_NAME,
+      store: new RedisStore({
+        client: redis,
+        disableTouch: true,
+      }),
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 365 * 1, // 1 year
+        httpOnly: true,
+        sameSite: 'lax', // csrf
+        secure: __prod__, // true -> cookie only works in https
+        domain: __prod__ ? '.drivechain.exchange' : undefined,
+      },
+      saveUninitialized: false, // don't store empty sessions
+      secret: process.env.SESSION_SECRET,
+      resave: false,
+    })
+  )
+
   // apollo
   const schema = await buildSchema({
     resolvers: [
@@ -75,11 +115,17 @@ const main = async (): Promise<void> => {
       NewsResolver,
       PostResolver,
       TopicResolver,
+      UserResolver,
     ],
   })
 
   const apolloServer = new ApolloServer({
     schema,
+    context: ({ req, res }): MyContext => ({
+      req,
+      res,
+      redis,
+    }),
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
   })
 
