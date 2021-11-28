@@ -8,7 +8,7 @@ const useIsAuth = (role?: string) => {
   const router = useRouter()
 
   useEffect(() => {
-    if ((!loading && !data?.me) || data?.me?.role !== role) {
+    if (!loading && (!data?.me || data?.me?.role !== role)) {
       router.push('/admin/login')
     }
   }, [loading, data, router, role])

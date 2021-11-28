@@ -6,7 +6,7 @@ const DashboardAdmin = () => {
     <Layout title="Dashboard | Admin | Drivechain Exchange">
       <AdminNav />
 
-      <Box>Dashboard</Box>
+      <Box mt="10">Dashboard</Box>
     </Layout>
   )
 }

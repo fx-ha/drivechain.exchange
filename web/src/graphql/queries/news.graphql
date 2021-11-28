@@ -1,17 +1,22 @@
-query News($topic: String!) {
-  newsByTopic(topic: $topic) {
-    content
-    fee
-    txid
-    block {
+query News($limit: Int!, $cursor: String) {
+  newsItems(limit: $limit, cursor: $cursor) {
+    news {
+      content
+      fee
+      txid
       createdAt
-      hash
-      height
-    }
-    topic {
+      block {
+        createdAt
+        hash
+        height
+      }
+      topic {
       name
       hex
       createdAt
+      }
     }
+    hasMore
+    total
   }
 }

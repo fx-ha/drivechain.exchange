@@ -1,5 +1,12 @@
 import { ObjectType, Field } from 'type-graphql'
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm'
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryColumn,
+} from 'typeorm'
 import { Block, Topic } from '.'
 
 @ObjectType()
@@ -24,6 +31,10 @@ class NewsItem extends BaseEntity {
   @Field(() => Block)
   @ManyToOne(() => Block, (block) => block.newsItems)
   block!: Block
+
+  @Field(() => String)
+  @CreateDateColumn({ type: 'timestamptz' })
+  createdAt!: Date
 }
 
 export default NewsItem

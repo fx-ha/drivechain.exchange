@@ -1,6 +1,27 @@
-import { Resolver, Arg, Mutation, Query } from 'type-graphql'
+import {
+  Resolver,
+  Arg,
+  Mutation,
+  Query,
+  ObjectType,
+  Field,
+  UseMiddleware,
+  Int,
+} from 'type-graphql'
+import { LessThan } from 'typeorm'
 import { FaucetRequest } from '../entities'
 import { MAX_FAUCET_REQUEST } from '../constants'
+import { isAuth } from '../middleware/is-auth'
+
+@ObjectType()
+class PaginatedFaucetRequests {
+  @Field(() => [FaucetRequest])
+  faucetRequests!: FaucetRequest[]
+  @Field()
+  hasMore!: boolean
+  @Field()
+  total!: number
+}
 
 @Resolver()
 class FaucetResolver {
@@ -38,6 +59,42 @@ class FaucetResolver {
   ): Promise<FaucetRequest | undefined> {
     return await FaucetRequest.findOne(id)
   }
+
+  @Query(() => PaginatedFaucetRequests)
+  @UseMiddleware(isAuth)
+  async faucetRequests(
+    @Arg('limit', () => Int) limit: number,
+    @Arg('cursor', () => String, { nullable: true })
+    cursor: string | null | undefined
+  ) {
+    // not more than 50
+    const realLimit = Math.min(50, limit)
+
+    const reaLimitPlusOne = realLimit + 1
+
+    const faucetRequests = !cursor
+      ? await FaucetRequest.find({
+          take: reaLimitPlusOne,
+          order: { createdAt: 'DESC' },
+        })
+      : await FaucetRequest.find({
+          take: reaLimitPlusOne,
+          order: { createdAt: 'DESC' },
+          where: { createdAt: LessThan(new Date(Number(cursor))) },
+        })
+
+    const total = await FaucetRequest.count()
+
+    return {
+      faucetRequests: faucetRequests.slice(0, realLimit),
+      hasMore: faucetRequests.length === reaLimitPlusOne,
+      total,
+    }
+  }
+
+  // TODO faucet options
+  // amount
+  // timeout
 }
 
 export default FaucetResolver

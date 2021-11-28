@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client'
 import * as Apollo from '@apollo/client'
 export type Maybe<T> = T | null
+export type InputMaybe<T> = Maybe<T>
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K]
 }
@@ -97,9 +98,52 @@ export type NewsItem = {
   __typename?: 'NewsItem'
   block: Block
   content: Scalars['String']
+  createdAt: Scalars['String']
   fee: Scalars['Float']
   topic: Topic
   txid: Scalars['String']
+}
+
+export type PaginatedBlocks = {
+  __typename?: 'PaginatedBlocks'
+  blocks: Array<Block>
+  hasMore: Scalars['Boolean']
+  total: Scalars['Float']
+}
+
+export type PaginatedFaucetRequests = {
+  __typename?: 'PaginatedFaucetRequests'
+  faucetRequests: Array<FaucetRequest>
+  hasMore: Scalars['Boolean']
+  total: Scalars['Float']
+}
+
+export type PaginatedInvoices = {
+  __typename?: 'PaginatedInvoices'
+  hasMore: Scalars['Boolean']
+  invoices: Array<Invoice>
+  total: Scalars['Float']
+}
+
+export type PaginatedNewsItems = {
+  __typename?: 'PaginatedNewsItems'
+  hasMore: Scalars['Boolean']
+  news: Array<NewsItem>
+  total: Scalars['Float']
+}
+
+export type PaginatedPosts = {
+  __typename?: 'PaginatedPosts'
+  hasMore: Scalars['Boolean']
+  posts: Array<Post>
+  total: Scalars['Float']
+}
+
+export type PaginatedTopics = {
+  __typename?: 'PaginatedTopics'
+  hasMore: Scalars['Boolean']
+  topics: Array<Topic>
+  total: Scalars['Float']
 }
 
 export type Post = {
@@ -120,36 +164,72 @@ export type Post = {
 export type Query = {
   __typename?: 'Query'
   addressByChain: Scalars['String']
+  blocks: PaginatedBlocks
   faucetRequest?: Maybe<FaucetRequest>
+  faucetRequests: PaginatedFaucetRequests
   invoice?: Maybe<Invoice>
+  invoices: PaginatedInvoices
   me?: Maybe<User>
   newsByTopic: Array<NewsItem>
+  newsItems: PaginatedNewsItems
   post?: Maybe<Post>
+  posts: PaginatedPosts
   topics: Array<Topic>
+  topicsAdmin: PaginatedTopics
 }
 
 export type QueryAddressByChainArgs = {
   chain: Scalars['String']
 }
 
+export type QueryBlocksArgs = {
+  cursor?: InputMaybe<Scalars['Int']>
+  limit: Scalars['Int']
+}
+
 export type QueryFaucetRequestArgs = {
   id: Scalars['String']
+}
+
+export type QueryFaucetRequestsArgs = {
+  cursor?: InputMaybe<Scalars['String']>
+  limit: Scalars['Int']
 }
 
 export type QueryInvoiceArgs = {
   id: Scalars['String']
 }
 
+export type QueryInvoicesArgs = {
+  cursor?: InputMaybe<Scalars['String']>
+  limit: Scalars['Int']
+}
+
 export type QueryNewsByTopicArgs = {
   topic: Scalars['String']
+}
+
+export type QueryNewsItemsArgs = {
+  cursor?: InputMaybe<Scalars['String']>
+  limit: Scalars['Int']
 }
 
 export type QueryPostArgs = {
   id: Scalars['String']
 }
 
+export type QueryPostsArgs = {
+  cursor?: InputMaybe<Scalars['String']>
+  limit: Scalars['Int']
+}
+
+export type QueryTopicsAdminArgs = {
+  cursor?: InputMaybe<Scalars['String']>
+  limit: Scalars['Int']
+}
+
 export type ReceiverInput = {
-  allocation?: Maybe<Scalars['Float']>
+  allocation?: InputMaybe<Scalars['Float']>
   receiveAddress: Scalars['String']
   receiveChain: Scalars['String']
 }
@@ -283,6 +363,26 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never }>
 
 export type LogoutMutation = { __typename?: 'Mutation'; logout: boolean }
 
+export type BlocksQueryVariables = Exact<{
+  limit: Scalars['Int']
+  cursor?: InputMaybe<Scalars['Int']>
+}>
+
+export type BlocksQuery = {
+  __typename?: 'Query'
+  blocks: {
+    __typename?: 'PaginatedBlocks'
+    hasMore: boolean
+    total: number
+    blocks: Array<{
+      __typename?: 'Block'
+      hash: string
+      height: number
+      createdAt: string
+    }>
+  }
+}
+
 export type FaucetRequestQueryVariables = Exact<{
   id: Scalars['String']
 }>
@@ -303,6 +403,31 @@ export type FaucetRequestQuery = {
       }
     | null
     | undefined
+}
+
+export type FaucetRequestsQueryVariables = Exact<{
+  limit: Scalars['Int']
+  cursor?: InputMaybe<Scalars['String']>
+}>
+
+export type FaucetRequestsQuery = {
+  __typename?: 'Query'
+  faucetRequests: {
+    __typename?: 'PaginatedFaucetRequests'
+    hasMore: boolean
+    total: number
+    faucetRequests: Array<{
+      __typename?: 'FaucetRequest'
+      id: string
+      chain: string
+      address: string
+      amount: number
+      isPaid: boolean
+      txid?: string | null | undefined
+      createdAt: string
+      updatedAt: string
+    }>
+  }
 }
 
 export type InvoiceQueryVariables = Exact<{
@@ -327,6 +452,31 @@ export type InvoiceQuery = {
     | undefined
 }
 
+export type InvoicesQueryVariables = Exact<{
+  limit: Scalars['Int']
+  cursor?: InputMaybe<Scalars['String']>
+}>
+
+export type InvoicesQuery = {
+  __typename?: 'Query'
+  invoices: {
+    __typename?: 'PaginatedInvoices'
+    hasMore: boolean
+    total: number
+    invoices: Array<{
+      __typename?: 'Invoice'
+      id: string
+      depositChain: string
+      depositAddress: string
+      depositAmount?: number | null | undefined
+      hasDeposited: boolean
+      receiveEstimate?: number | null | undefined
+      createdAt: string
+      updatedAt: string
+    }>
+  }
+}
+
 export type MeQueryVariables = Exact<{ [key: string]: never }>
 
 export type MeQuery = {
@@ -345,16 +495,50 @@ export type MeQuery = {
 }
 
 export type NewsQueryVariables = Exact<{
-  topic: Scalars['String']
+  limit: Scalars['Int']
+  cursor?: InputMaybe<Scalars['String']>
 }>
 
 export type NewsQuery = {
+  __typename?: 'Query'
+  newsItems: {
+    __typename?: 'PaginatedNewsItems'
+    hasMore: boolean
+    total: number
+    news: Array<{
+      __typename?: 'NewsItem'
+      content: string
+      fee: number
+      txid: string
+      createdAt: string
+      block: {
+        __typename?: 'Block'
+        createdAt: string
+        hash: string
+        height: number
+      }
+      topic: {
+        __typename?: 'Topic'
+        name: string
+        hex: string
+        createdAt: string
+      }
+    }>
+  }
+}
+
+export type NewsByTopicQueryVariables = Exact<{
+  topic: Scalars['String']
+}>
+
+export type NewsByTopicQuery = {
   __typename?: 'Query'
   newsByTopic: Array<{
     __typename?: 'NewsItem'
     content: string
     fee: number
     txid: string
+    createdAt: string
     block: {
       __typename?: 'Block'
       createdAt: string
@@ -400,11 +584,64 @@ export type PostQuery = {
     | undefined
 }
 
+export type PostsQueryVariables = Exact<{
+  limit: Scalars['Int']
+  cursor?: InputMaybe<Scalars['String']>
+}>
+
+export type PostsQuery = {
+  __typename?: 'Query'
+  posts: {
+    __typename?: 'PaginatedPosts'
+    hasMore: boolean
+    total: number
+    posts: Array<{
+      __typename?: 'Post'
+      id: string
+      depositChain: string
+      depositAddress: string
+      hasDeposited: boolean
+      depositAmount?: number | null | undefined
+      coinNewsFee?: number | null | undefined
+      text: string
+      txid?: string | null | undefined
+      createdAt: string
+      updatedAt: string
+      topic: {
+        __typename?: 'Topic'
+        hex: string
+        name: string
+        createdAt: string
+      }
+    }>
+  }
+}
+
 export type TopicsQueryVariables = Exact<{ [key: string]: never }>
 
 export type TopicsQuery = {
   __typename?: 'Query'
   topics: Array<{ __typename?: 'Topic'; hex: string; name: string }>
+}
+
+export type TopicsAdminQueryVariables = Exact<{
+  limit: Scalars['Int']
+  cursor?: InputMaybe<Scalars['String']>
+}>
+
+export type TopicsAdminQuery = {
+  __typename?: 'Query'
+  topicsAdmin: {
+    __typename?: 'PaginatedTopics'
+    hasMore: boolean
+    total: number
+    topics: Array<{
+      __typename?: 'Topic'
+      hex: string
+      name: string
+      createdAt: string
+    }>
+  }
 }
 
 export const CreateFaucetRequestDocument = gql`
@@ -695,6 +932,61 @@ export type LogoutMutationOptions = Apollo.BaseMutationOptions<
   LogoutMutation,
   LogoutMutationVariables
 >
+export const BlocksDocument = gql`
+  query Blocks($limit: Int!, $cursor: Int) {
+    blocks(limit: $limit, cursor: $cursor) {
+      blocks {
+        hash
+        height
+        createdAt
+      }
+      hasMore
+      total
+    }
+  }
+`
+
+/**
+ * __useBlocksQuery__
+ *
+ * To run a query within a React component, call `useBlocksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBlocksQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBlocksQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useBlocksQuery(
+  baseOptions: Apollo.QueryHookOptions<BlocksQuery, BlocksQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<BlocksQuery, BlocksQueryVariables>(
+    BlocksDocument,
+    options
+  )
+}
+export function useBlocksLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<BlocksQuery, BlocksQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<BlocksQuery, BlocksQueryVariables>(
+    BlocksDocument,
+    options
+  )
+}
+export type BlocksQueryHookResult = ReturnType<typeof useBlocksQuery>
+export type BlocksLazyQueryHookResult = ReturnType<typeof useBlocksLazyQuery>
+export type BlocksQueryResult = Apollo.QueryResult<
+  BlocksQuery,
+  BlocksQueryVariables
+>
 export const FaucetRequestDocument = gql`
   query FaucetRequest($id: String!) {
     faucetRequest(id: $id) {
@@ -760,6 +1052,76 @@ export type FaucetRequestQueryResult = Apollo.QueryResult<
   FaucetRequestQuery,
   FaucetRequestQueryVariables
 >
+export const FaucetRequestsDocument = gql`
+  query FaucetRequests($limit: Int!, $cursor: String) {
+    faucetRequests(limit: $limit, cursor: $cursor) {
+      faucetRequests {
+        id
+        chain
+        address
+        amount
+        isPaid
+        txid
+        createdAt
+        updatedAt
+      }
+      hasMore
+      total
+    }
+  }
+`
+
+/**
+ * __useFaucetRequestsQuery__
+ *
+ * To run a query within a React component, call `useFaucetRequestsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFaucetRequestsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFaucetRequestsQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useFaucetRequestsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    FaucetRequestsQuery,
+    FaucetRequestsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<FaucetRequestsQuery, FaucetRequestsQueryVariables>(
+    FaucetRequestsDocument,
+    options
+  )
+}
+export function useFaucetRequestsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    FaucetRequestsQuery,
+    FaucetRequestsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<FaucetRequestsQuery, FaucetRequestsQueryVariables>(
+    FaucetRequestsDocument,
+    options
+  )
+}
+export type FaucetRequestsQueryHookResult = ReturnType<
+  typeof useFaucetRequestsQuery
+>
+export type FaucetRequestsLazyQueryHookResult = ReturnType<
+  typeof useFaucetRequestsLazyQuery
+>
+export type FaucetRequestsQueryResult = Apollo.QueryResult<
+  FaucetRequestsQuery,
+  FaucetRequestsQueryVariables
+>
 export const InvoiceDocument = gql`
   query Invoice($id: String!) {
     invoice(id: $id) {
@@ -815,6 +1177,71 @@ export type InvoiceQueryResult = Apollo.QueryResult<
   InvoiceQuery,
   InvoiceQueryVariables
 >
+export const InvoicesDocument = gql`
+  query Invoices($limit: Int!, $cursor: String) {
+    invoices(limit: $limit, cursor: $cursor) {
+      invoices {
+        id
+        depositChain
+        depositAddress
+        depositAmount
+        hasDeposited
+        receiveEstimate
+        createdAt
+        updatedAt
+      }
+      hasMore
+      total
+    }
+  }
+`
+
+/**
+ * __useInvoicesQuery__
+ *
+ * To run a query within a React component, call `useInvoicesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInvoicesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInvoicesQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useInvoicesQuery(
+  baseOptions: Apollo.QueryHookOptions<InvoicesQuery, InvoicesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<InvoicesQuery, InvoicesQueryVariables>(
+    InvoicesDocument,
+    options
+  )
+}
+export function useInvoicesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    InvoicesQuery,
+    InvoicesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<InvoicesQuery, InvoicesQueryVariables>(
+    InvoicesDocument,
+    options
+  )
+}
+export type InvoicesQueryHookResult = ReturnType<typeof useInvoicesQuery>
+export type InvoicesLazyQueryHookResult = ReturnType<
+  typeof useInvoicesLazyQuery
+>
+export type InvoicesQueryResult = Apollo.QueryResult<
+  InvoicesQuery,
+  InvoicesQueryVariables
+>
 export const MeDocument = gql`
   query Me {
     me {
@@ -858,21 +1285,26 @@ export type MeQueryHookResult = ReturnType<typeof useMeQuery>
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>
 export const NewsDocument = gql`
-  query News($topic: String!) {
-    newsByTopic(topic: $topic) {
-      content
-      fee
-      txid
-      block {
+  query News($limit: Int!, $cursor: String) {
+    newsItems(limit: $limit, cursor: $cursor) {
+      news {
+        content
+        fee
+        txid
         createdAt
-        hash
-        height
+        block {
+          createdAt
+          hash
+          height
+        }
+        topic {
+          name
+          hex
+          createdAt
+        }
       }
-      topic {
-        name
-        hex
-        createdAt
-      }
+      hasMore
+      total
     }
   }
 `
@@ -889,7 +1321,8 @@ export const NewsDocument = gql`
  * @example
  * const { data, loading, error } = useNewsQuery({
  *   variables: {
- *      topic: // value for 'topic'
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
  *   },
  * });
  */
@@ -911,6 +1344,75 @@ export function useNewsLazyQuery(
 export type NewsQueryHookResult = ReturnType<typeof useNewsQuery>
 export type NewsLazyQueryHookResult = ReturnType<typeof useNewsLazyQuery>
 export type NewsQueryResult = Apollo.QueryResult<NewsQuery, NewsQueryVariables>
+export const NewsByTopicDocument = gql`
+  query NewsByTopic($topic: String!) {
+    newsByTopic(topic: $topic) {
+      content
+      fee
+      txid
+      createdAt
+      block {
+        createdAt
+        hash
+        height
+      }
+      topic {
+        name
+        hex
+        createdAt
+      }
+    }
+  }
+`
+
+/**
+ * __useNewsByTopicQuery__
+ *
+ * To run a query within a React component, call `useNewsByTopicQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNewsByTopicQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNewsByTopicQuery({
+ *   variables: {
+ *      topic: // value for 'topic'
+ *   },
+ * });
+ */
+export function useNewsByTopicQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    NewsByTopicQuery,
+    NewsByTopicQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<NewsByTopicQuery, NewsByTopicQueryVariables>(
+    NewsByTopicDocument,
+    options
+  )
+}
+export function useNewsByTopicLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    NewsByTopicQuery,
+    NewsByTopicQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<NewsByTopicQuery, NewsByTopicQueryVariables>(
+    NewsByTopicDocument,
+    options
+  )
+}
+export type NewsByTopicQueryHookResult = ReturnType<typeof useNewsByTopicQuery>
+export type NewsByTopicLazyQueryHookResult = ReturnType<
+  typeof useNewsByTopicLazyQuery
+>
+export type NewsByTopicQueryResult = Apollo.QueryResult<
+  NewsByTopicQuery,
+  NewsByTopicQueryVariables
+>
 export const PostDocument = gql`
   query Post($id: String!) {
     post(id: $id) {
@@ -967,6 +1469,73 @@ export function usePostLazyQuery(
 export type PostQueryHookResult = ReturnType<typeof usePostQuery>
 export type PostLazyQueryHookResult = ReturnType<typeof usePostLazyQuery>
 export type PostQueryResult = Apollo.QueryResult<PostQuery, PostQueryVariables>
+export const PostsDocument = gql`
+  query Posts($limit: Int!, $cursor: String) {
+    posts(limit: $limit, cursor: $cursor) {
+      posts {
+        id
+        depositChain
+        depositAddress
+        hasDeposited
+        depositAmount
+        coinNewsFee
+        text
+        txid
+        topic {
+          hex
+          name
+          createdAt
+        }
+        createdAt
+        updatedAt
+      }
+      hasMore
+      total
+    }
+  }
+`
+
+/**
+ * __usePostsQuery__
+ *
+ * To run a query within a React component, call `usePostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePostsQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function usePostsQuery(
+  baseOptions: Apollo.QueryHookOptions<PostsQuery, PostsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<PostsQuery, PostsQueryVariables>(
+    PostsDocument,
+    options
+  )
+}
+export function usePostsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<PostsQuery, PostsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<PostsQuery, PostsQueryVariables>(
+    PostsDocument,
+    options
+  )
+}
+export type PostsQueryHookResult = ReturnType<typeof usePostsQuery>
+export type PostsLazyQueryHookResult = ReturnType<typeof usePostsLazyQuery>
+export type PostsQueryResult = Apollo.QueryResult<
+  PostsQuery,
+  PostsQueryVariables
+>
 export const TopicsDocument = gql`
   query Topics {
     topics {
@@ -1014,4 +1583,67 @@ export type TopicsLazyQueryHookResult = ReturnType<typeof useTopicsLazyQuery>
 export type TopicsQueryResult = Apollo.QueryResult<
   TopicsQuery,
   TopicsQueryVariables
+>
+export const TopicsAdminDocument = gql`
+  query TopicsAdmin($limit: Int!, $cursor: String) {
+    topicsAdmin(limit: $limit, cursor: $cursor) {
+      topics {
+        hex
+        name
+        createdAt
+      }
+      hasMore
+      total
+    }
+  }
+`
+
+/**
+ * __useTopicsAdminQuery__
+ *
+ * To run a query within a React component, call `useTopicsAdminQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTopicsAdminQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTopicsAdminQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useTopicsAdminQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    TopicsAdminQuery,
+    TopicsAdminQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<TopicsAdminQuery, TopicsAdminQueryVariables>(
+    TopicsAdminDocument,
+    options
+  )
+}
+export function useTopicsAdminLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    TopicsAdminQuery,
+    TopicsAdminQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<TopicsAdminQuery, TopicsAdminQueryVariables>(
+    TopicsAdminDocument,
+    options
+  )
+}
+export type TopicsAdminQueryHookResult = ReturnType<typeof useTopicsAdminQuery>
+export type TopicsAdminLazyQueryHookResult = ReturnType<
+  typeof useTopicsAdminLazyQuery
+>
+export type TopicsAdminQueryResult = Apollo.QueryResult<
+  TopicsAdminQuery,
+  TopicsAdminQueryVariables
 >

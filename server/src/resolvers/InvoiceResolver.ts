@@ -1,7 +1,18 @@
-import { Resolver, Arg, Mutation, InputType, Field, Query } from 'type-graphql'
-import { getConnection } from 'typeorm'
+import {
+  Resolver,
+  Arg,
+  Mutation,
+  InputType,
+  Field,
+  Query,
+  ObjectType,
+  UseMiddleware,
+  Int,
+} from 'type-graphql'
+import { getConnection, LessThan } from 'typeorm'
 import { Invoice, Receiver } from '../entities'
 import { getNewAddress, getPort } from '../utils'
+import { isAuth } from '../middleware/is-auth'
 
 @InputType()
 class ReceiverInput {
@@ -11,6 +22,16 @@ class ReceiverInput {
   receiveChain!: string
   @Field({ defaultValue: 1 })
   allocation!: number
+}
+
+@ObjectType()
+class PaginatedInvoices {
+  @Field(() => [Invoice])
+  invoices!: Invoice[]
+  @Field()
+  hasMore!: boolean
+  @Field()
+  total!: number
 }
 
 @Resolver()
@@ -62,6 +83,38 @@ class InvoiceResolver {
   async invoice(@Arg('id') id: string): Promise<Invoice | undefined> {
     return await Invoice.findOne(id)
     // TODO query receivers with dataloader or type-graphql-dataloader
+  }
+
+  @Query(() => PaginatedInvoices)
+  @UseMiddleware(isAuth)
+  async invoices(
+    @Arg('limit', () => Int) limit: number,
+    @Arg('cursor', () => String, { nullable: true })
+    cursor: string | null | undefined
+  ) {
+    // not more than 50
+    const realLimit = Math.min(50, limit)
+
+    const reaLimitPlusOne = realLimit + 1
+
+    const invoices = !cursor
+      ? await Invoice.find({
+          take: reaLimitPlusOne,
+          order: { createdAt: 'DESC' },
+        })
+      : await Invoice.find({
+          take: reaLimitPlusOne,
+          order: { createdAt: 'DESC' },
+          where: { createdAt: LessThan(new Date(Number(cursor))) },
+        })
+
+    const total = await Invoice.count()
+
+    return {
+      invoices: invoices.slice(0, realLimit),
+      hasMore: invoices.length === reaLimitPlusOne,
+      total,
+    }
   }
 }
 
