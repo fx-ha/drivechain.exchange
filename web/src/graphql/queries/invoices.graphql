@@ -1,0 +1,16 @@
+query Invoices($limit: Int!, $cursor: String) {
+  invoices(limit: $limit, cursor: $cursor) {
+    invoices {
+      id
+      depositChain
+      depositAddress
+      depositAmount
+      hasDeposited
+      receiveEstimate
+      createdAt
+      updatedAt
+    }
+    hasMore
+    total
+  }
+}

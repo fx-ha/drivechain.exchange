@@ -29,7 +29,7 @@ const LoginAdmin = () => {
           })
 
           if (data?.login.errors) {
-            console.log(errors)
+            console.error(errors)
           } else if (data?.login.user) {
             if (typeof router.query.next === 'string') {
               router.push(router.query.next)
@@ -58,6 +58,7 @@ const LoginAdmin = () => {
                   label="password"
                   name="password"
                   placeholder="password"
+                  type="password"
                   isRequired
                 />
               </Box>

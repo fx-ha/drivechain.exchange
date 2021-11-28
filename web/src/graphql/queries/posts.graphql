@@ -1,0 +1,23 @@
+query Posts($limit: Int!, $cursor: String) {
+  posts(limit: $limit, cursor: $cursor) {
+    posts {
+      id
+      depositChain
+      depositAddress
+      hasDeposited
+      depositAmount
+      coinNewsFee
+      text
+      txid
+      topic {
+        hex
+        name
+        createdAt
+      }
+      createdAt
+      updatedAt
+    }
+    hasMore
+    total
+  }
+}

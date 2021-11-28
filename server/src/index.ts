@@ -12,6 +12,7 @@ import { buildSchema } from 'type-graphql'
 import { schedule } from 'node-cron'
 import {
   AddressResolver,
+  BlockResolver,
   FaucetResolver,
   InvoiceResolver,
   NewsResolver,
@@ -116,6 +117,7 @@ const main = async (): Promise<void> => {
       PostResolver,
       TopicResolver,
       UserResolver,
+      BlockResolver,
     ],
   })
 

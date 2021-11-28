@@ -15,6 +15,7 @@ type InputFieldProps = React.InputHTMLAttributes<HTMLInputElement> & {
 
 const InputField = ({
   label,
+  type,
   labelSrOnly,
   isRequired,
   size: _,
@@ -33,6 +34,7 @@ const InputField = ({
         id={field.name}
         placeholder={props.placeholder}
         isRequired={isRequired}
+        type={type}
       />
       {error && <FormErrorMessage>{error}</FormErrorMessage>}
     </FormControl>

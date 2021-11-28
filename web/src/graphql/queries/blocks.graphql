@@ -1,0 +1,11 @@
+query Blocks($limit: Int!, $cursor: Int) {
+  blocks(limit: $limit, cursor: $cursor) {
+    blocks {
+      hash
+      height
+      createdAt
+    }
+    hasMore
+    total
+  }
+}

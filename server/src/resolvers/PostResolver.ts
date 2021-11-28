@@ -1,6 +1,27 @@
-import { Resolver, Arg, Mutation, Query } from 'type-graphql'
+import {
+  Resolver,
+  Arg,
+  Mutation,
+  Query,
+  ObjectType,
+  Field,
+  UseMiddleware,
+  Int,
+} from 'type-graphql'
+import { LessThan } from 'typeorm'
 import { Post, Topic } from '../entities'
 import { getNewAddress, getPort } from '../utils'
+import { isAuth } from '../middleware/is-auth'
+
+@ObjectType()
+class PaginatedPosts {
+  @Field(() => [Post])
+  posts!: Post[]
+  @Field()
+  hasMore!: boolean
+  @Field()
+  total!: number
+}
 
 @Resolver()
 class PostResolver {
@@ -43,6 +64,40 @@ class PostResolver {
   @Query(() => Post, { nullable: true })
   async post(@Arg('id') id: string): Promise<Post | undefined> {
     return await Post.findOne(id, { relations: ['topic'] })
+  }
+
+  @Query(() => PaginatedPosts)
+  @UseMiddleware(isAuth)
+  async posts(
+    @Arg('limit', () => Int) limit: number,
+    @Arg('cursor', () => String, { nullable: true })
+    cursor: string | null | undefined
+  ) {
+    // not more than 50
+    const realLimit = Math.min(50, limit)
+
+    const reaLimitPlusOne = realLimit + 1
+
+    const posts = !cursor
+      ? await Post.find({
+          take: reaLimitPlusOne,
+          order: { createdAt: 'DESC' },
+          relations: ['topic'],
+        })
+      : await Post.find({
+          take: reaLimitPlusOne,
+          order: { createdAt: 'DESC' },
+          where: { createdAt: LessThan(new Date(Number(cursor))) },
+          relations: ['topic'],
+        })
+
+    const total = await Post.count()
+
+    return {
+      posts: posts.slice(0, realLimit),
+      hasMore: posts.length === reaLimitPlusOne,
+      total,
+    }
   }
 }
 

@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { Box, Button, Flex, Input, Select, Spacer } from '@chakra-ui/react'
-import { Layout } from '../components'
-import { apolloClient as client } from '../utils'
-import { useCreateFaucetRequestMutation } from '../generated/graphql'
+import { Layout } from '../../components'
+import { apolloClient as client } from '../../utils'
+import { useCreateFaucetRequestMutation } from '../../generated/graphql'
 
 const Faucet = () => {
   const router = useRouter()

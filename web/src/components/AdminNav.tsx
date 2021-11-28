@@ -37,6 +37,10 @@ const AdminNav = () => {
         <Link>Posts</Link>
       </NextLink>
 
+      <NextLink href="/admin/topics" passHref>
+        <Link>Topics</Link>
+      </NextLink>
+
       <Link
         onClick={async () => {
           await logout()

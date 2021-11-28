@@ -1,6 +1,6 @@
 query Me {
   me {
-     id
+    id
     username
     createdAt
     updatedAt

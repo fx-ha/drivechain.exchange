@@ -15,45 +15,43 @@ import {
 } from '@chakra-ui/react'
 import { BsBoxArrowUpRight, BsFillTrashFill } from 'react-icons/bs'
 import { AiFillEdit } from 'react-icons/ai'
-import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io'
+import { IoIosArrowForward } from 'react-icons/io'
 import { AdminNav, Layout, PaginateButton } from '../../components'
-import { useBlocksQuery } from '../../generated/graphql'
-import { apolloClient as client, truncateMiddle } from '../../utils'
+import { useTopicsAdminQuery } from '../../generated/graphql'
+import { apolloClient as client } from '../../utils'
 
-const BlocksAdmin = () => {
-  const [cursor, setCursor] = useState<number>()
+const TopicsAdmin = () => {
+  const [cursor, setCursor] = useState<string>()
 
-  const { data, loading, error } = useBlocksQuery({
+  const { data, loading, error } = useTopicsAdminQuery({
     client,
     variables: { limit: 10, cursor },
   })
 
   return (
-    <Layout title="Blocks | Admin | Drivechain Exchange">
+    <Layout title="Topics | Admin | Drivechain Exchange">
       <AdminNav />
 
-      <Box mt="10">
+      <Box mt="10" overflowX="auto">
         {error && <Box>{error.message}</Box>}
         {loading && <Box>loading...</Box>}
 
-        <Table variant="simple" mb="5">
-          <TableCaption placement="top">Blocks</TableCaption>
+        <Table maxW="full" variant="simple" mb="5">
+          <TableCaption placement="top">Topics</TableCaption>
           <Thead>
             <Tr>
-              <Th>Hash</Th>
-              <Th isNumeric>Height</Th>
-              <Th isNumeric>Created At</Th>
+              <Th>Hex</Th>
+              <Th>Name</Th>
+              <Th>Created at</Th>
               <Th>Actions</Th>
             </Tr>
           </Thead>
           <Tbody>
-            {data?.blocks.blocks.map(({ hash, height, createdAt }) => (
-              <Tr key={hash}>
-                <Td>{truncateMiddle(hash)}</Td>
-                <Td isNumeric>{height}</Td>
-                <Td isNumeric>
-                  {new Date(Number(createdAt)).toLocaleString()}
-                </Td>
+            {data?.topicsAdmin.topics.map(({ hex, name, createdAt }) => (
+              <Tr key={hex}>
+                <Td>{hex}</Td>
+                <Td>{name}</Td>
+                <Td>{new Date(Number(createdAt)).toLocaleString()}</Td>
                 <Td>
                   <ButtonGroup variant="solid" size="sm" spacing={3}>
                     <IconButton
@@ -89,27 +87,15 @@ const BlocksAdmin = () => {
 
         <Flex w="full" alignItems="center" justifyContent="center">
           <PaginateButton
-            disabled={
-              data?.blocks.total !== undefined
-                ? data?.blocks.blocks[0].height === data?.blocks.total - 1
-                : undefined
-            }
+            disabled={!data?.topicsAdmin.hasMore}
             isLoading={loading}
             onClick={() => {
-              if (data?.blocks.blocks[0].height) {
-                setCursor(data.blocks.blocks[0].height + 11)
+              if (data?.topicsAdmin.hasMore) {
+                setCursor(
+                  data?.topicsAdmin.topics[data.topicsAdmin.topics.length - 1]
+                    .createdAt
+                )
               }
-            }}
-          >
-            <Icon as={IoIosArrowBack} boxSize={4} />
-          </PaginateButton>
-          <PaginateButton
-            disabled={!data?.blocks.hasMore}
-            isLoading={loading}
-            onClick={() => {
-              setCursor(
-                data?.blocks.blocks[data.blocks.blocks.length - 1].height
-              )
             }}
           >
             <Icon as={IoIosArrowForward} boxSize={4} />
@@ -120,4 +106,4 @@ const BlocksAdmin = () => {
   )
 }
 
-export default BlocksAdmin
+export default TopicsAdmin

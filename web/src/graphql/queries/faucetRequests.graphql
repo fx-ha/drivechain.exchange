@@ -1,0 +1,16 @@
+query FaucetRequests($limit: Int!, $cursor: String) {
+  faucetRequests(limit: $limit, cursor: $cursor) {
+    faucetRequests {
+      id
+      chain
+      address
+      amount
+      isPaid
+      txid
+      createdAt
+      updatedAt
+    }
+    hasMore
+    total
+  }
+}

@@ -1,0 +1,11 @@
+query TopicsAdmin($limit: Int!, $cursor: String) {
+  topicsAdmin(limit: $limit, cursor: $cursor) {
+    topics {
+      hex
+      name
+      createdAt
+    }
+    hasMore
+    total
+  }
+}

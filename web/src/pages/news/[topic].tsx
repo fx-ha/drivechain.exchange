@@ -16,7 +16,11 @@ import {
 } from '@chakra-ui/react'
 import { BiSortAlt2 } from 'react-icons/bi'
 import { Layout, NewsCard, PostInput } from '../../components'
-import { NewsItem, useNewsQuery, useTopicsQuery } from '../../generated/graphql'
+import {
+  NewsItem,
+  useNewsByTopicQuery,
+  useTopicsQuery,
+} from '../../generated/graphql'
 import { apolloClient as client } from '../../utils'
 
 type SortType = 'fee' | 'date'
@@ -37,7 +41,7 @@ const News = () => {
     client,
   })
 
-  const { data: newsData, loading: newsLoading } = useNewsQuery({
+  const { data: newsData, loading: newsLoading } = useNewsByTopicQuery({
     client,
     variables: { topic: activeTopic },
     pollInterval: 1000 * 60 * 10,
