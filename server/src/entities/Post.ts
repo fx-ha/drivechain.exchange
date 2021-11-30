@@ -49,6 +49,10 @@ class Post extends BaseEntity {
   @ManyToOne(() => Topic, (topic) => topic.posts)
   topic!: Topic
 
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  extra?: string
+
   @Field(() => String)
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt!: Date

@@ -64,10 +64,10 @@ const main = async (): Promise<void> => {
   await conn.runMigrations()
 
   // cron
-  // run every 10 minutes from :00
-  schedule('0,10,20,30,40,50 * * * *', () => saveBlocks())
-  // run every 10 minutes from :05
-  schedule('5,15,25,35,45,55 * * * *', () => saveNews())
+  // run every 3 minutes
+  schedule('*/3 * * * *', () => saveBlocks())
+  // run every 4 minutes
+  schedule('*/4 * * * *', () => saveNews())
   // run every minute
   schedule('*/1 * * * *', () => handleInvoices())
   schedule('*/1 * * * *', () => handlePosts())

@@ -92,6 +92,7 @@ const PostInput = ({ topics }: { topics: TopicsQuery | undefined }) => {
                     <option value="thunder">Thunder</option>
                     <option value="trainchain">Trainchain</option>
                     <option value="zside">Zside</option>
+                    <option value="lightning">Lightning</option>
                   </SelectField>
 
                   <Button

@@ -52,10 +52,17 @@ export type Invoice = {
   depositAddress: Scalars['String']
   depositAmount?: Maybe<Scalars['Float']>
   depositChain: Scalars['String']
+  extra?: Maybe<Scalars['String']>
   hasDeposited: Scalars['Boolean']
   id: Scalars['ID']
   receiveEstimate?: Maybe<Scalars['Float']>
   updatedAt: Scalars['String']
+}
+
+export type LnInvoice = {
+  __typename?: 'LnInvoice'
+  paymentHash: Scalars['String']
+  paymentRequest: Scalars['String']
 }
 
 export type Mutation = {
@@ -153,6 +160,7 @@ export type Post = {
   depositAddress: Scalars['String']
   depositAmount?: Maybe<Scalars['Float']>
   depositChain: Scalars['String']
+  extra?: Maybe<Scalars['String']>
   hasDeposited: Scalars['Boolean']
   id: Scalars['ID']
   text: Scalars['String']
@@ -165,6 +173,9 @@ export type Query = {
   __typename?: 'Query'
   addressByChain: Scalars['String']
   blocks: PaginatedBlocks
+  checkLnInvoice?: Maybe<Scalars['Boolean']>
+  createLnInvoice?: Maybe<LnInvoice>
+  createLnUrlP?: Maybe<Scalars['String']>
   faucetRequest?: Maybe<FaucetRequest>
   faucetRequests: PaginatedFaucetRequests
   invoice?: Maybe<Invoice>
@@ -185,6 +196,10 @@ export type QueryAddressByChainArgs = {
 export type QueryBlocksArgs = {
   cursor?: InputMaybe<Scalars['Int']>
   limit: Scalars['Int']
+}
+
+export type QueryCheckLnInvoiceArgs = {
+  paymentHash: Scalars['String']
 }
 
 export type QueryFaucetRequestArgs = {
@@ -293,6 +308,7 @@ export type CreateInvoiceMutation = {
         depositChain: string
         depositAddress: string
         hasDeposited: boolean
+        extra?: string | null | undefined
         createdAt: string
         updatedAt: string
       }
@@ -319,6 +335,7 @@ export type CreatePostMutation = {
         coinNewsFee?: number | null | undefined
         text: string
         txid?: string | null | undefined
+        extra?: string | null | undefined
         createdAt: string
         updatedAt: string
         topic: {
@@ -445,6 +462,7 @@ export type InvoiceQuery = {
         depositAmount?: number | null | undefined
         hasDeposited: boolean
         receiveEstimate?: number | null | undefined
+        extra?: string | null | undefined
         createdAt: string
         updatedAt: string
       }
@@ -471,6 +489,7 @@ export type InvoicesQuery = {
       depositAmount?: number | null | undefined
       hasDeposited: boolean
       receiveEstimate?: number | null | undefined
+      extra?: string | null | undefined
       createdAt: string
       updatedAt: string
     }>
@@ -571,6 +590,7 @@ export type PostQuery = {
         coinNewsFee?: number | null | undefined
         text: string
         txid?: string | null | undefined
+        extra?: string | null | undefined
         createdAt: string
         updatedAt: string
         topic: {
@@ -605,6 +625,7 @@ export type PostsQuery = {
       coinNewsFee?: number | null | undefined
       text: string
       txid?: string | null | undefined
+      extra?: string | null | undefined
       createdAt: string
       updatedAt: string
       topic: {
@@ -712,6 +733,7 @@ export const CreateInvoiceDocument = gql`
       depositChain
       depositAddress
       hasDeposited
+      extra
       createdAt
       updatedAt
     }
@@ -781,6 +803,7 @@ export const CreatePostDocument = gql`
         name
         createdAt
       }
+      extra
       createdAt
       updatedAt
     }
@@ -1131,6 +1154,7 @@ export const InvoiceDocument = gql`
       depositAmount
       hasDeposited
       receiveEstimate
+      extra
       createdAt
       updatedAt
     }
@@ -1187,6 +1211,7 @@ export const InvoicesDocument = gql`
         depositAmount
         hasDeposited
         receiveEstimate
+        extra
         createdAt
         updatedAt
       }
@@ -1429,6 +1454,7 @@ export const PostDocument = gql`
         name
         createdAt
       }
+      extra
       createdAt
       updatedAt
     }
@@ -1486,6 +1512,7 @@ export const PostsDocument = gql`
           name
           createdAt
         }
+        extra
         createdAt
         updatedAt
       }

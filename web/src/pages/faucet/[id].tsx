@@ -25,7 +25,7 @@ const Invoice = () => {
   const { data, loading, error } = useFaucetRequestQuery({
     client,
     variables: { id },
-    pollInterval: 1000 * 60 * 2,
+    pollInterval: 1000 * 60 * 1,
   })
 
   if (loading || !data || !data.faucetRequest) {

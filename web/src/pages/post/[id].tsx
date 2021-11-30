@@ -14,7 +14,7 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { BeatLoader } from 'react-spinners'
-import { Layout, NewsContent } from '../../components'
+import { DepositBox, Layout, NewsContent } from '../../components'
 import { usePostQuery } from '../../generated/graphql'
 import { apolloClient as client, formatDistance } from '../../utils'
 
@@ -29,7 +29,7 @@ const PostInvoice = () => {
   const { data, loading, error } = usePostQuery({
     client,
     variables: { id },
-    pollInterval: 1000 * 60 * 2,
+    pollInterval: 1000 * 30,
   })
 
   if (loading || !data || !data.post) {
@@ -89,58 +89,27 @@ const PostInvoice = () => {
                   placement="top"
                 >
                   forever!*
-                </Tooltip>{' '}
-                <br />
-                Send between 0.0002 and 1.0 BTC ({data.post.depositChain}) to
+                </Tooltip>
               </Text>
 
-              <Tooltip label="Copy address" placement="bottom">
-                <Box
-                  w="100%"
-                  fontSize={{ base: 'sm', sm: 'md' }}
-                  value={data.post.depositAddress}
-                  cursor="pointer"
-                  border="1px solid"
-                  borderRadius="md"
-                  paddingInlineStart="4"
-                  paddingInlineEnd="4"
-                  outline="2px solid transparent"
-                  height="10"
-                  position="relative"
-                  borderColor="inherit"
-                  padding="0"
-                  lineHeight="inherit"
-                  color="inherit"
-                  fontFamily="inherit"
-                  margin="0"
-                  pt="2"
-                  pb="3"
-                  pr="3"
-                  pl="3"
-                  textOverflow="ellipsis"
-                  whiteSpace="nowrap"
-                  overflow="hidden"
-                  _hover={{ borderColor }}
-                  onClick={(e) => {
-                    navigator.clipboard.writeText(
-                      e.currentTarget.textContent !== null
-                        ? e.currentTarget.textContent
-                        : ''
-                    )
-                    toast({
-                      title: 'Copied.',
-                      duration: 4000,
-                      isClosable: true,
-                    })
-                  }}
-                >
-                  {data.post.depositAddress}
-                </Box>
-              </Tooltip>
+              {data.post.depositChain === 'lightning' ? (
+                <Text mb="4">Send 100 sats ({data.post.depositChain})</Text>
+              ) : (
+                <Text>
+                  Send between 0.0002 and 1.0 BTC ({data.post.depositChain}) to
+                </Text>
+              )}
+
+              <DepositBox
+                depositAddress={data.post.depositAddress}
+                depositChain={data.post.depositChain}
+                extra={data.post.extra}
+              />
 
               <Box mt="12" mb="2">
                 Waiting for your payment
               </Box>
+
               <BeatLoader speedMultiplier={0.75} />
             </Flex>
           </Box>
@@ -151,7 +120,7 @@ const PostInvoice = () => {
     )
   }
 
-  if (data.post.hasDeposited) {
+  if (data.post.hasDeposited && data.post.txid) {
     return (
       <Layout title="Post | Drivechain Exchange">
         <Flex>
@@ -196,16 +165,18 @@ const PostInvoice = () => {
             </Flex>
 
             <Flex direction="column">
-              <Text mb="3">
-                You sent {data.post.depositAmount} BTC from{' '}
-                {data.post.depositChain}! Transaction ID:
+              <Text mb="6">
+                {data.post.depositChain === 'lightning'
+                  ? `You sent 100 sats (lightning).`
+                  : `You sent ${data.post.depositAmount} BTC (${data.post.depositChain}).`}
               </Text>
+
+              <Text mb="2">CoinNews Transaction ID:</Text>
 
               <Tooltip label="Copy transaction id" placement="bottom">
                 <Box
                   w="100%"
                   fontSize={{ base: 'sm', sm: 'md' }}
-                  value={data.post.txid}
                   cursor="pointer"
                   border="1px solid"
                   borderRadius="md"
@@ -215,25 +186,17 @@ const PostInvoice = () => {
                   height="auto"
                   position="relative"
                   borderColor="inherit"
-                  padding="0"
                   lineHeight="inherit"
                   color="inherit"
                   fontFamily="inherit"
                   margin="0"
-                  pt="3"
-                  pb="2"
-                  pr="3"
-                  pl="3"
+                  p="3"
                   textOverflow="ellipsis"
                   whiteSpace="nowrap"
                   overflow="hidden"
                   _hover={{ borderColor }}
-                  onClick={(e) => {
-                    navigator.clipboard.writeText(
-                      e.currentTarget.textContent !== null
-                        ? e.currentTarget.textContent
-                        : ''
-                    )
+                  onClick={() => {
+                    navigator.clipboard.writeText(data.post!.txid!)
                     toast({
                       title: 'Copied.',
                       duration: 4000,

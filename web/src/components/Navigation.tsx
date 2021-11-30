@@ -9,6 +9,7 @@ import {
   useColorMode,
 } from '@chakra-ui/react'
 import { BiMoon, BiSun } from 'react-icons/bi'
+import { useMediaQuery } from 'react-responsive'
 import { NavLink } from '.'
 
 const Navigation = () => {
@@ -24,7 +25,9 @@ const Navigation = () => {
       <Spacer />
 
       <HStack spacing={3}>
-        <NavLink href="/news/a1a1a1a1">News</NavLink>
+        <NavLink href="/news/a1a1a1a1">
+          {useMediaQuery({ minWidth: 430 }) ? 'CoinNews' : 'News'}
+        </NavLink>
         <Text>|</Text>
         <NavLink href="/faucet">Faucet</NavLink>
         <Text>|</Text>

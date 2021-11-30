@@ -40,6 +40,10 @@ class Invoice extends BaseEntity {
   @Column({ type: 'numeric', scale: 8, nullable: true })
   receiveEstimate?: number
 
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  extra?: string
+
   @Field(() => String)
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt!: Date

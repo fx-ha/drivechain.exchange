@@ -11,7 +11,7 @@ import {
 } from 'type-graphql'
 import { getConnection, LessThan } from 'typeorm'
 import { Invoice, Receiver } from '../entities'
-import { getNewAddress, getPort } from '../utils'
+import { createLnInvoice, getNewAddress, getPort } from '../utils'
 import { isAuth } from '../middleware/is-auth'
 
 @InputType()
@@ -47,13 +47,22 @@ class InvoiceResolver {
     // each allocation must be between 0 and 1
     // sum of allocations must be 1
     // if fixed rate selected && receiveAmount < fees: warning
-    const port = getPort(depositChain)
+    let depositAddress: string | undefined
+    let extra: string | undefined
 
-    if (port === undefined) {
-      return null
+    if (depositChain === 'lightning') {
+      const result = await createLnInvoice(100, 'drivechain.exchange')
+      depositAddress = result?.payment_hash
+      extra = result?.payment_request
+    } else {
+      const port = getPort(depositChain)
+
+      if (port === undefined) {
+        return null
+      }
+
+      depositAddress = await getNewAddress(port)
     }
-
-    const depositAddress = await getNewAddress(port)
 
     if (depositAddress === undefined) {
       return null
@@ -74,6 +83,7 @@ class InvoiceResolver {
     const invoice = new Invoice()
     invoice.depositChain = depositChain
     invoice.depositAddress = depositAddress
+    invoice.extra = extra
     invoice.receivers = receivers
 
     return await connection.manager.save(invoice)

@@ -1,6 +1,7 @@
 import { getConnection } from 'typeorm'
 import { Post } from '../entities'
 import {
+  checkLnInvoice,
   getPort,
   getReceivedByAddress,
   rpcCall,
@@ -15,27 +16,42 @@ const handlePosts = async () => {
   })
 
   for (const post of unpaidPosts) {
-    const depositChainPort = getPort(post.depositChain)
+    let depositAmount = 0
 
-    if (depositChainPort === undefined) {
-      console.error('cannot get port for deposit chain')
+    if (post.depositChain === 'lightning') {
+      const result = await checkLnInvoice(post.depositAddress)
+      const isPaid = result?.paid
 
-      continue
-    }
+      if (!isPaid) {
+        continue
+      }
 
-    let depositAmount = await getReceivedByAddress(
-      post.depositAddress,
-      depositChainPort
-    )
+      // ln invoice asks for 100 sats
+      // exchange rate: 100 ln sats = 0.5 drivenet btc
+      depositAmount = 0.5
+    } else {
+      const depositChainPort = getPort(post.depositChain)
 
-    if (depositAmount < MIN_COIN_NEWS_FEE) {
-      console.log(`received insufficient amount for ${post.depositAddress}`)
+      if (depositChainPort === undefined) {
+        console.error('cannot get port for deposit chain')
 
-      continue
-    }
+        continue
+      }
 
-    if (depositAmount > MAX_COIN_NEWS_FEE) {
-      depositAmount = 1.0
+      depositAmount = await getReceivedByAddress(
+        post.depositAddress,
+        depositChainPort
+      )
+
+      if (depositAmount < MIN_COIN_NEWS_FEE) {
+        console.log(`received insufficient amount for ${post.depositAddress}`)
+
+        continue
+      }
+
+      if (depositAmount > MAX_COIN_NEWS_FEE) {
+        depositAmount = 1.0
+      }
     }
 
     const coinNewsFee = subtractServiceFee(depositAmount, 0)

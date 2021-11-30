@@ -13,6 +13,7 @@ mutation CreatePost($depositChain: String!, $header: String!, $text: String!) {
       name
       createdAt
     }
+    extra
     createdAt
     updatedAt
   }
