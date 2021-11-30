@@ -13,6 +13,7 @@ query Post($id: String!) {
       name
       createdAt
     }
+    extra
     createdAt
     updatedAt
   }

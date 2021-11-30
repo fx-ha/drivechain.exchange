@@ -1,6 +1,7 @@
 import { getConnection } from 'typeorm'
 import { Invoice, Receiver } from '../entities'
 import {
+  checkLnInvoice,
   getPort,
   getReceivedByAddress,
   sendToAddress,
@@ -8,6 +9,7 @@ import {
 } from '../utils'
 import { MIN_EXCHANGE_AMOUNT } from '../constants'
 
+// TODO needs refactoring
 const handleInvoices = async () => {
   const unpaidInvoices = await Invoice.find({
     where: { hasDeposited: false },
@@ -15,23 +17,40 @@ const handleInvoices = async () => {
   })
 
   for (const invoice of unpaidInvoices) {
-    const depositChainPort = getPort(invoice.depositChain)
+    let depositAmount = 0
 
-    if (depositChainPort === undefined) {
-      console.error('cannot get port for deposit chain')
+    if (invoice.depositChain === 'lightning') {
+      const result = await checkLnInvoice(invoice.depositAddress)
+      const isPaid = result?.paid
 
-      continue
-    }
+      if (!isPaid) {
+        continue
+      }
 
-    const depositAmount = await getReceivedByAddress(
-      invoice.depositAddress,
-      depositChainPort
-    )
+      // ln invoice asks for 100 sats
+      // exchange rate: 100 ln sats = 0.5 drivenet btc
+      depositAmount = 0.5
+    } else {
+      const depositChainPort = getPort(invoice.depositChain)
 
-    if (depositAmount < MIN_EXCHANGE_AMOUNT) {
-      console.log(`received insufficient amount for ${invoice.depositAddress}`)
+      if (depositChainPort === undefined) {
+        console.error('cannot get port for deposit chain')
 
-      continue
+        continue
+      }
+
+      depositAmount = await getReceivedByAddress(
+        invoice.depositAddress,
+        depositChainPort
+      )
+
+      if (depositAmount < MIN_EXCHANGE_AMOUNT) {
+        console.log(
+          `received insufficient amount for ${invoice.depositAddress}`
+        )
+
+        continue
+      }
     }
 
     const receiveEstimate = subtractServiceFee(depositAmount, 0)

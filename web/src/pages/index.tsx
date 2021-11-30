@@ -63,6 +63,7 @@ const Home = () => {
                 <option value="thunder">Thunder</option>
                 <option value="trainchain">Trainchain</option>
                 <option value="zside">Zside</option>
+                <option value="lightning">Lightning</option>
               </Select>
             </Box>
 
@@ -73,7 +74,9 @@ const Home = () => {
               cursor="pointer"
               onClick={() => {
                 setDeposit(receiveChain)
-                setReceive(depositChain)
+                setReceive(
+                  depositChain === 'lightning' ? 'drivenet' : depositChain
+                )
               }}
             />
 

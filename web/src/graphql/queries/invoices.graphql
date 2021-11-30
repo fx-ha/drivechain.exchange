@@ -7,6 +7,7 @@ query Invoices($limit: Int!, $cursor: String) {
       depositAmount
       hasDeposited
       receiveEstimate
+      extra
       createdAt
       updatedAt
     }

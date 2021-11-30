@@ -10,7 +10,7 @@ import {
 } from 'type-graphql'
 import { LessThan } from 'typeorm'
 import { Post, Topic } from '../entities'
-import { getNewAddress, getPort } from '../utils'
+import { createLnInvoice, getNewAddress, getPort } from '../utils'
 import { isAuth } from '../middleware/is-auth'
 
 @ObjectType()
@@ -31,13 +31,22 @@ class PostResolver {
     @Arg('header') header: string,
     @Arg('text') text: string
   ): Promise<Post | null> {
-    const port = getPort(depositChain)
+    let depositAddress: string | undefined
+    let extra: string | undefined
 
-    if (port === undefined) {
-      return null
+    if (depositChain === 'lightning') {
+      const result = await createLnInvoice(100, 'drivechain.exchange')
+      depositAddress = result?.payment_hash
+      extra = result?.payment_request
+    } else {
+      const port = getPort(depositChain)
+
+      if (port === undefined) {
+        return null
+      }
+
+      depositAddress = await getNewAddress(port)
     }
-
-    const depositAddress = await getNewAddress(port)
 
     if (depositAddress === undefined) {
       console.error('cannot get deposit address')
@@ -58,6 +67,7 @@ class PostResolver {
       depositAddress,
       text,
       topic,
+      extra,
     }).save()
   }
 

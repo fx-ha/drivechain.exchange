@@ -6,6 +6,7 @@ query Invoice($id: String!) {
     depositAmount
     hasDeposited
     receiveEstimate
+    extra
     createdAt
     updatedAt
   }

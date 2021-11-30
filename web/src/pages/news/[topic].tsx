@@ -44,7 +44,7 @@ const News = () => {
   const { data: newsData, loading: newsLoading } = useNewsByTopicQuery({
     client,
     variables: { topic: activeTopic },
-    pollInterval: 1000 * 60 * 10,
+    pollInterval: 1000 * 60 * 5,
   })
 
   useEffect(() => {

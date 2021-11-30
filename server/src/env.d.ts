@@ -15,5 +15,8 @@ declare namespace NodeJS {
     SESSION_SECRET: string
     REDIS_URL: string
     DOMAIN: string
+    LNBITS_URL: string
+    LNBITS_API_KEY: string
+    LNURL_API_KEY: string
   }
 }
