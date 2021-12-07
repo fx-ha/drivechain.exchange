@@ -72,9 +72,8 @@ const main = async (): Promise<void> => {
   schedule('*/4 * * * *', () => saveNews())
   // run every 3 minutes
   schedule('*/3 * * * *', () => saveBlocks())
-  // run every 2 minutes
-  schedule('*/2 * * * *', () => handleCnbRequests())
   // run every minute
+  schedule('*/1 * * * *', () => handleCnbRequests())
   schedule('*/1 * * * *', () => saveCnbRequests())
   schedule('*/1 * * * *', () => handleInvoices())
   schedule('*/1 * * * *', () => handlePosts())
