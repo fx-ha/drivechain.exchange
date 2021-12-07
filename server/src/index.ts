@@ -69,13 +69,13 @@ const main = async (): Promise<void> => {
 
   // cron
   // run every 4 minutes
-  schedule('*/4 * * * *', () => saveCnbRequests())
+  schedule('*/4 * * * *', () => saveNews())
   // run every 3 minutes
   schedule('*/3 * * * *', () => saveBlocks())
   // run every 2 minutes
   schedule('*/2 * * * *', () => handleCnbRequests())
   // run every minute
-  schedule('*/1 * * * *', () => saveNews())
+  schedule('*/1 * * * *', () => saveCnbRequests())
   schedule('*/1 * * * *', () => handleInvoices())
   schedule('*/1 * * * *', () => handlePosts())
   schedule('*/1 * * * *', () => handleFaucet())

@@ -1,7 +1,12 @@
 import { TwitterApi } from 'twitter-api-v2'
 import { CnbRequest } from '../entities'
 
-const client = new TwitterApi(process.env.TWITTER_BEARER_TOKEN).v2
+const client = new TwitterApi({
+  appKey: process.env.TWITTER_CONSUMER_KEY,
+  appSecret: process.env.TWITTER_CONSUMER_SECRET,
+  accessToken: process.env.TWITTER_OAUTH_TOKEN,
+  accessSecret: process.env.TWITTER_OAUTH_TOKEN_SECRET,
+}).readWrite.v2
 
 // TODO reduce api calls
 
