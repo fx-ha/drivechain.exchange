@@ -4,15 +4,15 @@
 
 Development:
 - copy ```.env.example``` to ```.env```
--  ```npm install``` to install
--  ```npm run watch``` to compile
-- ```npm run dev``` to start
+-  ```npm install```
+-  ```npm run watch```
+- ```npm run dev```
 
 Production:
 - copy ```.env.example``` to ```.env```
--  ```npm install``` to install
--  ```npm run build``` to build
--  ```npm run start``` to start
+-  ```npm install```
+-  ```npm run build```
+-  ```npm run start```
 
 
 ## Built with
@@ -22,6 +22,7 @@ Production:
 - GraphQL
 - Node.js
 - Postgres
+- Redis
 - TypeORM
 - TypeGraphQL
 - Typescript

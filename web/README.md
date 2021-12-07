@@ -4,18 +4,18 @@ This is a [Next.js](https://nextjs.org/) project
 ## Getting Started
 Development:
 - copy ```.env.local.example``` to ```.env.local```
--  ```npm install``` to install
-- ```npm run dev``` to start
+-  ```npm install```
+- ```npm run dev```
 
 Production:
 - copy ```.env.local.example``` to ```.env.local```
--  ```npm install``` to install
--  ```npm run build``` to build
--  ```npm run start``` to start
+-  ```npm install```
+-  ```npm run build```
+-  ```npm run start```
 
 ## Built with
 - Apollo
-- Chaktra UI
+- Chakra UI
 - GraphQL
 - Next.js
 - React
