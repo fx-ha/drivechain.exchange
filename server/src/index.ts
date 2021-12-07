@@ -23,6 +23,7 @@ import {
 import { createConnection } from 'typeorm'
 import {
   Block,
+  CnbRequest,
   FaucetRequest,
   Invoice,
   NewsItem,
@@ -32,9 +33,11 @@ import {
   User,
 } from './entities'
 import {
+  handleCnbRequests,
   handleFaucet,
   handleInvoices,
   handlePosts,
+  saveCnbRequests,
   saveBlocks,
   saveNews,
 } from './workers'
@@ -58,17 +61,20 @@ const main = async (): Promise<void> => {
       Topic,
       NewsItem,
       User,
+      CnbRequest,
     ],
   })
 
   await conn.runMigrations()
 
   // cron
-  // run every 3 minutes
-  schedule('*/3 * * * *', () => saveBlocks())
   // run every 4 minutes
   schedule('*/4 * * * *', () => saveNews())
+  // run every 3 minutes
+  schedule('*/3 * * * *', () => saveBlocks())
   // run every minute
+  schedule('*/1 * * * *', () => handleCnbRequests())
+  schedule('*/1 * * * *', () => saveCnbRequests())
   schedule('*/1 * * * *', () => handleInvoices())
   schedule('*/1 * * * *', () => handlePosts())
   schedule('*/1 * * * *', () => handleFaucet())

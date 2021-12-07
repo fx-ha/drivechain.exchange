@@ -13,6 +13,11 @@ module.exports = {
         destination: '/news/a1a1a1a1',
         permanent: true,
       },
+      {
+        source: '/news/tweets',
+        destination: '/news/42042069',
+        permanent: true,
+      },
     ]
   },
 }

@@ -24,6 +24,7 @@
     "pg": "^8.7.1",
     "redis": "^4.0.0",
     "reflect-metadata": "^0.1.13",
+    "twitter-api-v2": "^1.7.0",
     "type-graphql": "^1.1.1",
     "typeorm": "^0.2.38"
   },

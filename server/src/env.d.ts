@@ -18,5 +18,9 @@ declare namespace NodeJS {
     LNBITS_URL: string
     LNBITS_API_KEY: string
     LNURL_API_KEY: string
+    TWITTER_CONSUMER_KEY: string
+    TWITTER_CONSUMER_SECRET: string
+    TWITTER_OAUTH_TOKEN: string
+    TWITTER_OAUTH_TOKEN_SECRET: string
   }
 }
