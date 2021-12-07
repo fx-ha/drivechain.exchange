@@ -13,8 +13,7 @@ const client = new TwitterApi({
 const saveCnbRequests = async () => {
   const prevMention = await CnbRequest.findOne({ order: { createdAt: 'DESC' } })
 
-  const mentions = await client.userTimeline('1465828136688439296', {
-    exclude: 'retweets',
+  const mentions = await client.userMentionTimeline('1465828136688439296', {
     since_id: prevMention?.mentionId,
     max_results: 20,
   })
