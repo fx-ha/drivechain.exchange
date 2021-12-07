@@ -68,11 +68,9 @@ const main = async (): Promise<void> => {
   await conn.runMigrations()
 
   // cron
-  // run every 4 minutes
-  schedule('*/4 * * * *', () => saveNews())
-  // run every 3 minutes
-  schedule('*/3 * * * *', () => saveBlocks())
   // run every minute
+  schedule('*/1 * * * *', () => saveNews())
+  schedule('*/1 * * * *', () => saveBlocks())
   schedule('*/1 * * * *', () => handleInvoices())
   schedule('*/1 * * * *', () => handlePosts())
   schedule('*/1 * * * *', () => handleFaucet())
