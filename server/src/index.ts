@@ -73,11 +73,13 @@ const main = async (): Promise<void> => {
   // run every 3 minutes
   schedule('*/3 * * * *', () => saveBlocks())
   // run every minute
-  schedule('*/1 * * * *', () => handleCnbRequests())
-  schedule('*/1 * * * *', () => saveCnbRequests())
   schedule('*/1 * * * *', () => handleInvoices())
   schedule('*/1 * * * *', () => handlePosts())
   schedule('*/1 * * * *', () => handleFaucet())
+  if (__prod__) {
+    schedule('*/1 * * * *', () => handleCnbRequests())
+    schedule('*/1 * * * *', () => saveCnbRequests())
+  }
 
   // express
   const app = express()
