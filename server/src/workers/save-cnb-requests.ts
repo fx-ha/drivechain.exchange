@@ -3,6 +3,8 @@ import { CnbRequest } from '../entities'
 
 const client = new TwitterApi(process.env.TWITTER_BEARER_TOKEN).v2
 
+// TODO reduce api calls
+
 const saveCnbRequests = async () => {
   const prevMention = await CnbRequest.findOne({ order: { createdAt: 'DESC' } })
 
@@ -12,8 +14,8 @@ const saveCnbRequests = async () => {
     max_results: 20,
   })
 
-  for (let i = 0; i < mentions.tweets.length; i++) {
-    const mentionId = mentions.tweets[i].id
+  for (const tweet of mentions.tweets) {
+    const mentionId = tweet.id
 
     const mention = await client.singleTweet(mentionId, {
       'tweet.fields': 'referenced_tweets',
@@ -24,13 +26,13 @@ const saveCnbRequests = async () => {
     )?.id
 
     if (targetId) {
-      const targetTweet = await client.singleTweet(mentionId, {
+      const targetTweet = await client.singleTweet(targetId, {
         expansions: 'author_id',
         'tweet.fields': 'created_at',
         'user.fields': 'username',
       })
 
-      CnbRequest.create({
+      await CnbRequest.create({
         mentionId,
         targetId,
         authorId: targetTweet.data.author_id,
@@ -40,10 +42,10 @@ const saveCnbRequests = async () => {
         text: targetTweet.data.text,
         createdAt: targetTweet.data.created_at,
       }).save()
+
+      await client.like('1465828136688439296', mentionId)
     }
   }
 }
 
 export default saveCnbRequests
-
-// URL = "https://twitter.com/twitter/status/[id]"

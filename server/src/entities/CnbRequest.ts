@@ -35,6 +35,14 @@ class CnbRequest extends BaseEntity {
   @Column()
   text!: string
 
+  @Field()
+  @Column({ default: false })
+  hasDeposited!: boolean
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  txid?: string
+
   @Field(() => String)
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt!: Date
