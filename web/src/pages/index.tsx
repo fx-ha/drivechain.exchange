@@ -110,7 +110,7 @@ const Home = () => {
         <Box mt={{ sm: '16' }} w={{ base: '340px', sm: '400px' }}>
           <Flex alignItems="center" justifyContent="center" mb="8">
             <Box mr="10">
-              <Box mb="3">Send to</Box>
+              <Box mb="3">Send from</Box>
               <Select
                 value={depositChain}
                 onChange={(e) =>
