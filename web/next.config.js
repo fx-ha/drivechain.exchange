@@ -18,6 +18,11 @@ module.exports = {
         destination: '/news/42042069',
         permanent: true,
       },
+      {
+        source: '/tweets',
+        destination: '/news/42042069',
+        permanent: true,
+      },
     ]
   },
 }

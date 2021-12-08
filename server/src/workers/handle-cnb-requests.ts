@@ -33,7 +33,7 @@ const handleCnbRequests = async () => {
       .where('id = :id', { id: request.id })
       .execute()
 
-    const status = `Tweet saved! Transaction ID: ${txid}. Follow CoinNews on drivechain.exchange/news/tweets or run your own node drivechain.info`
+    const status = `Tweet saved! Transaction ID: ${txid}. Follow CoinNews on drivechain.exchange/tweets or run your own node drivechain.info`
 
     await client.reply(status, request.mentionId)
   }
