@@ -17,7 +17,7 @@
     "dotenv-safe": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
-    "got": "^11.8.2",
+    "got": "^11.8.5",
     "graphql": "^15.7.2",
     "ioredis": "^4.28.1",
     "node-cron": "^3.0.0",
